@@ -1,0 +1,22 @@
+# Environment variables - NEVER commit these
+.env.local
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node / React
+node_modules/
+dist/
+.DS_Store
+
+# Vercel
+.vercel
+
+#file for testing database
+test_db.py
