@@ -35,3 +35,8 @@ def save_search_cache(route, departure_date, passengers, result_json):
     with get_db() as (conn, cursor):
         cursor.execute("INSERT INTO search_cache (route, departure_date, passengers, result_json) VALUES (%s, %s, %s, %s)", (route, departure_date, passengers, result_json))
         conn.commit()
+
+def save_price_history(route, departure_date, price_jpy, operating_airline, marketing_airline):
+    with get_db() as (conn, cursor):
+        cursor.execute("INSERT INTO price_history (route, departure_date, price_jpy, operating_airline, marketing_airline) VALUES (%s, %s, %s, %s, %s)", (route, departure_date, price_jpy, operating_airline, marketing_airline))
+        conn.commit()
