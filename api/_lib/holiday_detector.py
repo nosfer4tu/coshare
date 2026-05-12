@@ -11,6 +11,7 @@ def detect_holiday(date):
     year = date.year
     if date.month == 1:
             year -= 1
+            
     for holiday in JAPANESE_HOLIDAYS:
         start_date = datetime.strptime(f"{year}-{holiday['start']}", "%Y-%m-%d")
         end_date = datetime.strptime(f"{year}-{holiday['end']}", "%Y-%m-%d")
