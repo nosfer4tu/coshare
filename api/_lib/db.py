@@ -1,13 +1,7 @@
-import os
-from pathlib import Path
-from dotenv import load_dotenv
+from config import DATABASE_URL
 from contextlib import contextmanager
 import psycopg2
 from psycopg2.extras import RealDictCursor
-
-env_path = Path(__file__).parent.parent.parent / '.env.local'
-load_dotenv(dotenv_path=env_path)
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 @contextmanager
 def get_db():
