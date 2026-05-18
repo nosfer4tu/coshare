@@ -1,8 +1,4 @@
-import os
 import requests
-import json
-from pathlib import Path
-from dotenv import load_dotenv
 from normalizer import normalize_offers
 from codeshare_service import get_codeshare_offers
 from config import DUFFEL_ACCESS_TOKEN
