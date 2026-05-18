@@ -40,3 +40,18 @@ def save_price_history(route, departure_date, price_jpy, operating_airline, mark
     with get_db() as (conn, cursor):
         cursor.execute("INSERT INTO price_history (route, departure_date, price_jpy, operating_airline, marketing_airline) VALUES (%s, %s, %s, %s, %s)", (route, departure_date, price_jpy, operating_airline, marketing_airline))
         conn.commit()
+
+def get_cached_destinations(destination_code):
+    with get_db() as (conn, cursor):
+        cursor.execute("""
+                        SELECT * FROM destination_cache
+                        WHERE destination_code = %s
+                        AND cached_at >= NOW() - INTERVAL '7 days'
+                        """, (destination_code,))
+        result = cursor.fetchone()
+    return result
+
+def save_destination_cache(destination_code, activities_json):
+    with get_db() as (conn, cursor):
+        cursor.execute("INSERT INTO destination_cache (destination_code, activities_json) VALUES (%s, %s)", (destination_code, activities_json))
+        conn.commit()
