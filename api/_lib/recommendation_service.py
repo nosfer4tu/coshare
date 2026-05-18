@@ -2,7 +2,6 @@ from datetime import datetime
 from config import GOOGLE_PLACES_API_KEY
 from db import get_cached_destinations, save_destination_cache
 import requests
-from holiday_detector import detect_holiday
 AIRPORT_TO_CITY = {
     "CTS": "札幌", "HND": "東京", "NRT": "東京",
     "ITM": "大阪", "KIX": "大阪", "FUK": "福岡",
