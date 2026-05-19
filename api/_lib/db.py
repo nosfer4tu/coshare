@@ -15,19 +15,22 @@ def get_db():
     finally:
         conn.close()
 
-def get_cached_search(route, departure_date):
+def get_cached_search(route, departure_date, cabin_class, passengers):
     with get_db() as (conn, cursor):
         cursor.execute(""" 
                        SELECT * FROM search_cache
-                        WHERE route = %s AND departure_date = %s
+                        WHERE route = %s 
+                        AND departure_date = %s
+                        AND cabin_class = %s
+                        AND passengers = %s
                         AND cached_at >= NOW() - INTERVAL '24 hours'
-                        """,(route, departure_date))
+                        """,(route, departure_date, cabin_class, passengers))
         result = cursor.fetchone()
     return result
 
-def save_search_cache(route, departure_date, passengers, result_json):
+def save_search_cache(route, departure_date, passengers, result_json, cabin_class):
     with get_db() as (conn, cursor):
-        cursor.execute("INSERT INTO search_cache (route, departure_date, passengers, result_json) VALUES (%s, %s, %s, %s)", (route, departure_date, passengers, result_json))
+        cursor.execute("INSERT INTO search_cache (route, departure_date, passengers, result_json, cabin_class) VALUES (%s, %s, %s, %s, %s)", (route, departure_date, passengers, result_json, cabin_class))
         conn.commit()
 
 def save_price_history(route, departure_date, price_jpy, operating_airline, marketing_airline):
