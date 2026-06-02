@@ -34,7 +34,7 @@ class handler(BaseHTTPRequestHandler):
             codeshare_response = get_codeshare_offers(duffel_response)
             normalized_duffel = normalize_offers(duffel_response)
             result = normalized_duffel + codeshare_response
-            save_search_cache(f"{origin}-{destination}", departure_date, passengers, json.dumps(result), cabin_class)
+            save_search_cache(f"{origin}-{destination}", departure_date, ",".join(passengers), json.dumps(result), cabin_class)
             for offer in result:
                 if offer['Currency'] == 'JPY':
                     save_price_history(f"{origin}-{destination}", departure_date, offer['Total Amount'], offer['Operating Carrier'], offer['Marketing Carrier'])
