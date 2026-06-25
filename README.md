@@ -26,7 +26,7 @@ Built as a graduation project at Kyoto Seika University.
 | Frontend | React, JavaScript, CSS |
 | Database | PostgreSQL (Neon) |
 | Deployment | Vercel (Serverless Functions) |
-| External APIs | Amadeus Flight API, Google Places API |
+| External APIs | Duffel Flight API, Google Places API |
 
 ---
 
