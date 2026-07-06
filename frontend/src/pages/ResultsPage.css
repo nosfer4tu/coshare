@@ -1,0 +1,36 @@
+.results-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.results-page__header {
+    margin-bottom: 24px;
+}
+
+.results-page__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-ink);
+}
+
+.results-page__subtitle {
+    font-size: 14px;
+    color: var(--color-body);
+    margin-top: 4px;
+}
+
+.results-page__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.results-page__section-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-body);
+    margin: 16px 0 8px;
+}

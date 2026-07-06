@@ -1,0 +1,30 @@
+.mode-selector {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.mode-selector__btn {
+    padding: 8px 20px;
+    border-radius: var(--radius-badge);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-body);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.mode-selector__btn:hover {
+    border-color: var(--color-teal);
+    color: var(--color-teal);
+}
+
+.mode-selector__btn--active {
+    background: var(--color-teal);
+    border-color: var(--color-teal);
+    color: white;
+}

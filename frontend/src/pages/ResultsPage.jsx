@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState} from "react";
 import FlightCard from "../components/results/FlightCard";
 import CodeShareCard from "../components/results/CodeShareCard";
+import Navbar from "../components/common/Navbar";
+import "./ResultsPage.css";
 function ResultsPage(){
     const location = useLocation();
     const { origin, destination, departureDate, passengers, cabinClass, mode} = location.state || {};
@@ -60,15 +62,24 @@ function ResultsPage(){
     const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
     const sortedGroups = [...codeshareGroups, ...regularGroups];
     return (
-        <>
-            {sortedGroups.map((group) => (
-                group.length > 1
-                ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} />
-                : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} />
-            ))}
-        </>
-            
-    )
+    <>
+        <Navbar />
+        <div className="results-page">
+            <div className="results-page__header">
+                <h1 className="results-page__title">{origin} → {destination}</h1>
+                <p className="results-page__subtitle">{departureDate} • {passengers?.length}名</p>
+            </div>
+            <p className="results-page__section-label">コードシェア便の価格差</p>
+            <div className="results-page__list">
+                {sortedGroups.map((group) => (
+                    group.length > 1 
+                    ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} />
+                    : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} />
+                ))}
+            </div>
+        </div>
+    </>
+)
 }
 
 export default ResultsPage;

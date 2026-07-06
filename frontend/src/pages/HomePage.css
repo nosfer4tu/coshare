@@ -1,0 +1,23 @@
+.home-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 48px 16px 24px;
+}
+
+.home-page__hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.home-page__title {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--color-ink);
+    margin-bottom: 12px;
+}
+
+.home-page__subtitle {
+    font-size: 16px;
+    color: var(--color-body);
+}

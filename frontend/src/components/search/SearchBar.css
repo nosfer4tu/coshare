@@ -1,0 +1,109 @@
+.search-bar {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-bar__row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.search-bar__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.search-bar__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-body);
+}
+
+.search-bar__input {
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.search-bar__input:focus {
+    border-color: var(--color-teal);
+}
+
+.search-bar__counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-bar__counter-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease;
+}
+
+.search-bar__counter-btn:hover {
+    border-color: var(--color-teal);
+    color: var(--color-teal);
+}
+
+.search-bar__counter-value {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-ink);
+    min-width: 20px;
+    text-align: center;
+}
+
+.search-bar__select {
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    outline: none;
+    cursor: pointer;
+}
+
+.search-bar__submit {
+    padding: 12px 32px;
+    background: var(--color-teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+}
+
+.search-bar__submit:hover {
+    opacity: 0.9;
+}

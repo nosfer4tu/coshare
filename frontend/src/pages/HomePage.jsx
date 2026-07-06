@@ -3,8 +3,7 @@ import SearchModeSelector from "../components/search/SearchModeSelector";
 import SearchBar from "../components/search/SearchBar";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-
-
+import "./HomePage.css";
 
 function HomePage() {
     const [mode, setMode] = useState("codeshare");
@@ -25,30 +24,32 @@ function HomePage() {
         })
     }
     return (
-        <div>
-            <Navbar />
-            <section>
-                <h1>賢く飛ぼう、日本から</h1>
-                <p>コードシェア便の価格差を発見し、最安値で予約しよう</p>
+    <div>
+        <Navbar />
+        <div className="home-page">
+            <section className="home-page__hero">
+                <h1 className="home-page__title">賢く飛ぼう、日本から</h1>
+                <p className="home-page__subtitle">コードシェア便の価格差を発見し、最安値で予約しよう</p>
             </section>
             <SearchModeSelector mode={mode} onModeChange={setMode} />
             <SearchBar 
-            origin={origin}
-            setOrigin={setOrigin}
-            destination={destination}
-            setDestination={setDestination}
-            departureDate={departureDate}
-            setDepartureDate={setDepartureDate}
-            adults={adults}
-            setAdults={setAdults}
-            children={children}
-            setChildren={setChildren}
-            cabinClass={cabinClass}
-            setCabinClass={setCabinClass}
-            onSearch={handleSearch}
-            ></SearchBar>
+                origin={origin}
+                setOrigin={setOrigin}
+                destination={destination}
+                setDestination={setDestination}
+                departureDate={departureDate}
+                setDepartureDate={setDepartureDate}
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                cabinClass={cabinClass}
+                setCabinClass={setCabinClass}
+                onSearch={handleSearch}
+            />
         </div>
-    )
+    </div>
+)
 }
 
 export default HomePage;

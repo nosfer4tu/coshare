@@ -1,0 +1,30 @@
+.navbar {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 0 24px;
+}
+
+.navbar__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar__logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-teal);
+    letter-spacing: -0.5px;
+    margin: 0;
+    text-decoration: none !important;
+    color: var(--color-teal) !important;
+}
+
+.navbar__tagline {
+    font-size: 13px;
+    color: var(--color-body);
+    margin: 0;
+}
