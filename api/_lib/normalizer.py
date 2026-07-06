@@ -6,6 +6,9 @@ def normalize_offers(raw_response):
         offer_dict["Offer ID"] = offers['id']
         offer_dict["Total Amount"] = offers['total_amount']
         offer_dict["Currency"] = offers['total_currency']
+        if offer_dict["Currency"] == "USD":
+            offer_dict["Total Amount"] = round(float(offers['total_amount']) * 155)
+            offer_dict["Currency"] = "JPY"
         offer_dict["Owner Airline"] = offers['owner']['name']
         offer_dict["Owner Airline IATA"] = offers['owner']['iata_code']
         for flight_slice in offers.get("slices",[]):

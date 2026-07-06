@@ -20,3 +20,9 @@ dist/
 
 #file for testing database
 test_db.py
+
+#Graphify output
+graphify-out
+
+#Impeccable
+.impeccable/
