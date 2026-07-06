@@ -18,7 +18,7 @@ def get_annual_price_trend(route):
             "date": row["departure_date"],
             "price_jpy": row["price_jpy"],
             "average_price": row["average_price"],
-            "holiday": detect_holiday(row["departure_date"])
+            "holiday": detect_holiday(str(row["departure_date"]))
         })
     return trend_list
 

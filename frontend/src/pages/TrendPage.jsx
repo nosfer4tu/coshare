@@ -1,6 +1,52 @@
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Navbar from "../components/common/Navbar";
+import PriceTrendChart from "../components/results/PriceTrendChart";
+
 function TrendPage(){
+    const location = useLocation();
+    const { origin, destination} = location.state || {};
+    const [ results, setResults] = useState([]);
+    const [ loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        let endpoint = "/api/trends/annual";
+        const params = new URLSearchParams({
+            origin,
+            destination,
+        });
+        const fetchData = async () =>{
+            try{
+                if (!endpoint) throw new Error("Unknown search mode");
+                const response = await fetch(endpoint + "?" + params.toString());
+                if (!response.ok) throw new Error (`Request failed: ${response.status}`);
+                const data = await response.json();
+                setResults(data.data);
+            } catch(error){
+                setError(error.message);
+            } finally{
+                setLoading(false);
+            }
+        };
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    if (loading) return <p>読み込み中...</p>
+    if (error) return <p>{error}</p>
     return (
-        <h1>TrendPage</h1>
+        <div>
+        <Navbar />
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '24px 16px' }}>
+            <h1 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '4px' }}>
+                {origin} → {destination} 価格トレンド
+            </h1>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '24px' }}>
+                取得データ: {results.length}件
+            </p>
+            <PriceTrendChart data={results} />
+        </div>
+    </div>
     )
 }
 

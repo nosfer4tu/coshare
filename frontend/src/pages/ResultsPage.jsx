@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState} from "react";
 import FlightCard from "../components/results/FlightCard";
 import CodeShareCard from "../components/results/CodeShareCard";
@@ -10,7 +10,14 @@ function ResultsPage(){
     const [ results, setResults] = useState([]);
     const [ loading, setLoading] = useState(true);
     const [ error, setError] = useState(null);
-    
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (mode === "trend") {
+            navigate("/trends", { state: { origin, destination, departureDate, passengers, cabinClass}});
+            return;
+        }
+    })
     useEffect(() => {
         let endpoint;
         switch(mode){
@@ -71,11 +78,12 @@ function ResultsPage(){
             </div>
             <p className="results-page__section-label">コードシェア便の価格差</p>
             <div className="results-page__list">
-                {sortedGroups.map((group) => (
-                    group.length > 1 
-                    ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} />
-                    : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} />
-                ))}
+                {sortedGroups.map((group) => {
+                    if (mode === "codeshare" && group.length === 1 && !group[0]["is Codeshare"]) return null;
+                    return group.length > 1 
+                        ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} />
+                        : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} />
+                })}
             </div>
         </div>
     </>

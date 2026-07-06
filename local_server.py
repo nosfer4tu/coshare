@@ -75,5 +75,18 @@ def codeshare_detect():
 
     return Response(json.dumps({"data": result}), status=200, mimetype='application/json')
 
+@app.route('/api/trends/annual')
+def trends_annual():
+    from trend_service import get_annual_price_trend
+    
+    origin = request.args.get('origin')
+    destination = request.args.get('destination')
+    
+    if not origin or not destination:
+        return Response(json.dumps({"error": "originとdestinationは必須項目です"}), status=400, mimetype='application/json')
+    
+    result = get_annual_price_trend(f"{origin}-{destination}")
+    return Response(json.dumps({"data": result}, default=str), status=200, mimetype='application/json')
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
