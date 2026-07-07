@@ -34,3 +34,9 @@
     color: var(--color-body);
     margin: 16px 0 8px;
 }
+
+.results-page__search {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 16px 16px 0;
+}

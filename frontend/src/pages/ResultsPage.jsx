@@ -6,20 +6,40 @@ import Navbar from "../components/common/Navbar";
 import "./ResultsPage.css";
 import SkeletonLoader from "../components/common/SkeletonLoader";
 import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
+import SearchBar from "../components/search/SearchBar";
+import SearchModeSelector from "../components/search/SearchModeSelector";
 function ResultsPage(){
     const location = useLocation();
-    const { origin, destination, departureDate, passengers, cabinClass, mode} = location.state || {};
+    const { origin: initOrigin, destination: initDestination, departureDate: initDepartureDate, passengers: initPassengers, cabinClass: initCabinClass, mode } = location.state || {};
+    const [origin, setOrigin] = useState(initOrigin ?? "");
+    const [destination, setDestination] = useState(initDestination ?? "");
+    const [departureDate, setDepartureDate] = useState(initDepartureDate ?? "");
+    const [adults, setAdults] = useState(initPassengers?.filter(p => p === "adult").length ?? 1);
+    const [children, setChildren] = useState(initPassengers?.filter(p => p === "child").length ?? 0);
+    const passengers = [
+        ...Array(adults).fill("adult"),
+        ...Array(children).fill("child")
+    ];
+    const [cabinClass, setCabinClass] = useState(initCabinClass ?? "economy");
+    const [searchMode, setSearchMode] = useState(mode ?? "codeshare");
     const [ results, setResults] = useState([]);
     const [ loading, setLoading] = useState(true);
     const [ error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const handleSearch = () => {
+        navigate("/results", {
+            state: { origin, destination, departureDate, passengers, cabinClass, mode: searchMode }
+        });
+    };
 
     useEffect(() => {
         if (mode === "trend") {
             navigate("/trends", { state: { origin, destination, departureDate, passengers, cabinClass}});
             return;
         }
-    })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     useEffect(() => {
         let endpoint;
         switch(mode){
@@ -89,6 +109,24 @@ function ResultsPage(){
     return (
     <>
         <Navbar />
+        <div className="results-page__search">
+            <SearchModeSelector mode={searchMode} onModeChange={setSearchMode} />
+            <SearchBar
+                origin={origin}
+                setOrigin={setOrigin}
+                destination={destination}
+                setDestination={setDestination}
+                departureDate={departureDate}
+                setDepartureDate={setDepartureDate}
+                adults={adults}
+                setAdults={setAdults}
+                children={children}
+                setChildren={setChildren}
+                cabinClass={cabinClass}
+                setCabinClass={setCabinClass}
+                onSearch={handleSearch}
+            />
+        </div>
         <div className="results-page">
             <div className="results-page__header">
                 <h1 className="results-page__title">{origin} → {destination}</h1>
