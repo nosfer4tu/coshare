@@ -1,0 +1,41 @@
+.status-message {
+    max-width: var(--max-width);
+    margin: 48px auto;
+    padding: 32px;
+    border-radius: var(--radius-card);
+    text-align: center;
+}
+
+.status-message--error {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+}
+
+.status-message--empty {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+.status-message__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 8px;
+}
+
+.status-message__body {
+    font-size: 14px;
+    color: var(--color-body);
+    margin-bottom: 16px;
+}
+
+.status-message__link {
+    display: inline-block;
+    padding: 8px 20px;
+    background: var(--color-teal);
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}

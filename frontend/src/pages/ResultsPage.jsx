@@ -4,6 +4,8 @@ import FlightCard from "../components/results/FlightCard";
 import CodeShareCard from "../components/results/CodeShareCard";
 import Navbar from "../components/common/Navbar";
 import "./ResultsPage.css";
+import SkeletonLoader from "../components/common/SkeletonLoader";
+import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
 function ResultsPage(){
     const location = useLocation();
     const { origin, destination, departureDate, passengers, cabinClass, mode} = location.state || {};
@@ -57,8 +59,18 @@ function ResultsPage(){
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    if (loading) return <p>読み込み中...</p>
-    if (error) return <p>{error}</p>
+    if (loading) return (
+        <div>
+            <Navbar />
+            <SkeletonLoader />
+        </div>
+    );
+    if (error) return (
+        <div>
+            <Navbar />
+            <ErrorMessage message={error} />
+        </div>
+    );
     const grouped = results.reduce((groups, offer) => {
         const key = `${offer["Departure Time"]}_${offer["Operating IATA"]}`;
         if (!groups[key]) groups[key] = [];
@@ -68,6 +80,12 @@ function ResultsPage(){
     const codeshareGroups = Object.values(grouped).filter((group) => group.length > 1);
     const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
     const sortedGroups = [...codeshareGroups, ...regularGroups];
+    if (sortedGroups.length === 0) return (
+        <div>
+            <Navbar />
+            <EmptyMessage />
+        </div>
+    );
     return (
     <>
         <Navbar />
@@ -86,6 +104,7 @@ function ResultsPage(){
                 })}
             </div>
         </div>
+        
     </>
 )
 }

@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/common/Navbar";
 import PriceTrendChart from "../components/results/PriceTrendChart";
+import '../components/common/SkeletonLoader.css'
+import { ErrorMessage } from "../components/common/StatusMessage";
 
 function TrendPage(){
     const location = useLocation();
@@ -55,8 +57,26 @@ function TrendPage(){
         fetchRecommendationData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    if (loading) return <p>読み込み中...</p>
-    if (error) return <p>{error}</p>
+    if (loading) return (
+    <div>
+        <Navbar />
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '24px 16px' }}>
+            <div className="shimmer" style={{ height: 24, width: 220, marginBottom: 8 }}></div>
+            <div className="shimmer" style={{ height: 14, width: 120, marginBottom: 32 }}></div>
+            <div className="shimmer" style={{ height: 300, width: '100%', marginBottom: 24 }}></div>
+            <div style={{ display: 'flex', gap: 16 }}>
+                <div className="shimmer" style={{ height: 100, flex: 1 }}></div>
+                <div className="shimmer" style={{ height: 100, flex: 1 }}></div>
+            </div>
+        </div>
+    </div>
+);
+    if (error) return (
+        <div>
+            <Navbar />
+            <ErrorMessage message={error} />
+        </div>
+    );
     return (
         <div>
         <Navbar />
