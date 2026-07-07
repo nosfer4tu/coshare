@@ -6,7 +6,7 @@ function AirportInput({ value, onChange, placeholder, label }) {
     const [suggestions, setSuggestions] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const debounceRef = useRef(null);
-    const [selected, setSelected] = useState(false);
+    const [selected, setSelected] = useState(!!value);
 
     useEffect(() => {
         if (selected) return;
