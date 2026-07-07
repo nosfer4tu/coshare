@@ -104,5 +104,24 @@ def trends_recommend():
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), status=500, mimetype='application/json')
 
+@app.route('/api/places/suggestions')
+def places_suggestions():
+    import requests as req
+    from config import DUFFEL_ACCESS_TOKEN
+    
+    query = request.args.get('query', '')
+    if not query or len(query) < 2:
+        return Response(json.dumps({"data": []}), status=200, mimetype='application/json')
+    
+    duffel_response = req.get(
+        f"https://api.duffel.com/places/suggestions?query={query}",
+        headers={
+            "Authorization": f"Bearer {DUFFEL_ACCESS_TOKEN}",
+            "Duffel-Version": "v2",
+            "Accept": "application/json"
+        }
+    )
+    return Response(duffel_response.text, status=duffel_response.status_code, mimetype='application/json')
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

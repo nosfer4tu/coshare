@@ -1,27 +1,24 @@
 import './SearchBar.css'
+import AirportInput from './AirportInput';
 
 function SearchBar({origin, setOrigin, destination, setDestination, departureDate, setDepartureDate, adults, setAdults, children, setChildren, cabinClass, setCabinClass, onSearch}){
     return (
         <div className="search-bar">
             <div className="search-bar__row">
                 <div className="search-bar__field">
-                    <label className="search-bar__label">出発地</label>
-                    <input 
-                        className="search-bar__input"
-                        type="text"
+                    <AirportInput
+                        label="出発地"
                         value={origin}
-                        onChange={(e) => setOrigin(e.target.value)}
-                        placeholder="例：TYO"
+                        onChange={setOrigin}
+                        placeholder="例：東京、NRT"
                     />
                 </div>
                 <div className="search-bar__field">
-                    <label className="search-bar__label">目的地</label>
-                    <input 
-                        className="search-bar__input"
-                        type="text"
+                    <AirportInput
+                        label="目的地"
                         value={destination}
-                        onChange={(e) => setDestination(e.target.value)}
-                        placeholder="例：LAX"
+                        onChange={setDestination}
+                        placeholder="例：ロサンゼルス、LAX"
                     />
                 </div>
                 <div className="search-bar__field">
