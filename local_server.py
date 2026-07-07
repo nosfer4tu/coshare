@@ -88,5 +88,21 @@ def trends_annual():
     result = get_annual_price_trend(f"{origin}-{destination}")
     return Response(json.dumps({"data": result}, default=str), status=200, mimetype='application/json')
 
+@app.route('/api/trends/recommend')
+def trends_recommend():
+    from trend_service import get_price_recommendation
+    
+    origin = request.args.get('origin')
+    destination = request.args.get('destination')
+    
+    if not origin or not destination:
+        return Response(json.dumps({"error": "必須項目が不足しています"}), status=400, mimetype='application/json')
+    
+    try:
+        result = get_price_recommendation(f"{origin}-{destination}")
+        return Response(json.dumps(result, default=str), status=200, mimetype='application/json')
+    except Exception as e:
+        return Response(json.dumps({"error": str(e)}), status=500, mimetype='application/json')
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
