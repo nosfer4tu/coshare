@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, ReferenceArea } from "recharts";
 
 function PriceTrendChart({ data }) {
     if (!data || data.length === 0) return <p>データがありません</p>;
@@ -18,8 +18,13 @@ function PriceTrendChart({ data }) {
             holiday: holiday?.name || null
         }))
         .sort((a, b) => a.date.localeCompare(b.date));
-
+    const obonStart = chartData.find(item => item.holiday === "お盆")?.date;
+    const obonEnd = chartData.findLast(item => item.holiday === "お盆")?.date;
+    const goldenWeekStart = chartData.find(item => item.holiday === "ゴールデンウィーク")?.date;
+    const goldenWeekEnd = chartData.findLast(item => item.holiday === "ゴールデンウィーク")?.date;
+    const newYearStart = chartData.find(item => item.holiday === "年末年始")?.date;
     return (
+    <>
         <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData} margin={{ top: 8, right: 16, left: 16, bottom: 8 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -51,8 +56,28 @@ function PriceTrendChart({ data }) {
                     dot={false}
                     strokeWidth={1.5}
                 />
+                {obonStart &&<ReferenceArea 
+                    x1={obonStart} 
+                    x2={obonEnd} 
+                    fill="#0D9488" 
+                    fillOpacity={0.1}
+                    label={{ value: "お盆", position: "insideTop", fontSize: 11, fill: "#0D9488" }}
+                />}
+                {goldenWeekStart &&<ReferenceArea 
+                    x1={goldenWeekStart} 
+                    x2={goldenWeekEnd} 
+                    fill="#0D9488" 
+                    fillOpacity={0.1}
+                    label={{ value: "ゴールデンウィーク", position: "insideTop", fontSize: 11, fill: "#0D9488" }}
+                />}
             </LineChart>
         </ResponsiveContainer>
+        {newYearStart && (
+            <p style={{ fontSize: 13, color: '#0D9488', marginTop: 8 }}>
+                ⚠️ 年末年始（12/29〜1/3）は価格が高騰する傾向があります
+            </p>
+        )}
+    </>
     );
 }
 
