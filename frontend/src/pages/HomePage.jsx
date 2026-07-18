@@ -29,7 +29,7 @@ function HomePage() {
         <div className="home-page">
             <section className="home-page__hero">
                 <h1 className="home-page__title">賢く飛ぼう、日本から</h1>
-                <p className="home-page__subtitle">コードシェア便の価格差を発見し、最安値で予約しよう</p>
+                <p className="home-page__subtitle">同じ飛行機でも、予約する便名で価格は変わる。安く買えるコードを見つけよう。</p>
             </section>
             <SearchModeSelector mode={mode} onModeChange={setMode} />
             <SearchBar 

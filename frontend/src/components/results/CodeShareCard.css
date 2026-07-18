@@ -82,3 +82,45 @@
     font-weight: 600;
     color: var(--color-teal);
 }
+
+.codeshare-card__booking {
+    border-top: 1px solid var(--color-border);
+    margin-top: 12px;
+    padding-top: 12px;
+}
+
+.codeshare-card__booking-label {
+    display: block;
+    font-size: 13px;
+    color: var(--color-body);
+    margin-bottom: 8px;
+}
+
+.codeshare-card__booking-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.codeshare-card__booking-primary {
+    display: inline-block;
+    background: var(--color-teal);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: var(--radius-card);
+}
+
+.codeshare-card__booking-secondary {
+    font-size: 13px;
+    color: var(--color-body);
+}
+
+.codeshare-card__booking-caption {
+    display: block;
+    font-size: 12px;
+    color: var(--color-body);
+    margin-top: 8px;
+}

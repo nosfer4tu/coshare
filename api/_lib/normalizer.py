@@ -1,7 +1,15 @@
 ## This module contains functions to normalize the raw response from the Duffel API into a more structured format.
+
+# Duffel test-mode returns this synthetic carrier alongside real airline data; exclude it everywhere.
+EXCLUDED_TEST_CARRIERS = {"ZZ"}
+
 def normalize_offers(raw_response):
     results = []
     for offers in raw_response.get("data", {}).get("offers",[]):
+        first_segment = (offers.get("slices") or [{}])[0].get("segments") or [{}]
+        display_carrier = first_segment[0].get("marketing_carrier") or {}
+        if display_carrier.get("iata_code") in EXCLUDED_TEST_CARRIERS:
+            continue
         offer_dict = {}
         offer_dict["Offer ID"] = offers['id']
         offer_dict["Total Amount"] = offers['total_amount']
@@ -9,8 +17,8 @@ def normalize_offers(raw_response):
         if offer_dict["Currency"] == "USD":
             offer_dict["Total Amount"] = round(float(offers['total_amount']) * 155)
             offer_dict["Currency"] = "JPY"
-        offer_dict["Owner Airline"] = offers['owner']['name']
-        offer_dict["Owner Airline IATA"] = offers['owner']['iata_code']
+        offer_dict["Owner Airline"] = display_carrier.get("name") or offers['owner']['name']
+        offer_dict["Owner Airline IATA"] = display_carrier.get("iata_code") or offers['owner']['iata_code']
         for flight_slice in offers.get("slices",[]):
             for segment in flight_slice.get("segments", []):
                 operating_carrier = segment.get("operating_carrier", {})
