@@ -1,0 +1,56 @@
+.price-gap-explainer {
+    margin: 8px 0 16px;
+}
+
+.price-gap-explainer__toggle {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    cursor: pointer;
+}
+
+.price-gap-explainer__toggle:hover {
+    background: var(--color-paper);
+}
+
+.price-gap-explainer__toggle:focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+}
+
+.price-gap-explainer__panel {
+    margin-top: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 16px;
+}
+
+.price-gap-explainer__heading {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0 0 8px;
+}
+
+.price-gap-explainer__body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-body);
+    margin: 0 0 12px;
+    max-width: 65ch;
+}
+
+.price-gap-explainer__note {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--color-body);
+    margin: 0;
+    max-width: 65ch;
+}

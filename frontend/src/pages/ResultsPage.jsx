@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState} from "react";
 import FlightCard from "../components/results/FlightCard";
 import CodeShareCard from "../components/results/CodeShareCard";
+import PriceGapExplainer from "../components/results/PriceGapExplainer";
 import Navbar from "../components/common/Navbar";
 import "./ResultsPage.css";
 import SkeletonLoader from "../components/common/SkeletonLoader";
@@ -172,6 +173,7 @@ function ResultsPage(){
                 <p className="results-page__subtitle">{departureDate} • {passengers?.length}名</p>
             </div>
             <p className="results-page__section-label">コードシェア便の価格差</p>
+            <PriceGapExplainer />
             <div className="results-page__list">
                 {sortedGroups.map((group) => {
                     if (searchMode === "codeshare" && group.length === 1 && !group[0]["is Codeshare"]) return null;
