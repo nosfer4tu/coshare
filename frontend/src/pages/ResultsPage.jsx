@@ -8,6 +8,7 @@ import SkeletonLoader from "../components/common/SkeletonLoader";
 import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
 import SearchBar from "../components/search/SearchBar";
 import SearchModeSelector from "../components/search/SearchModeSelector";
+import { hasRealGap } from "../utils/codeshareGap";
 function ResultsPage(){
     const location = useLocation();
     const navigate = useNavigate();
@@ -135,7 +136,9 @@ function ResultsPage(){
     }, {});
     const codeshareGroups = Object.values(grouped).filter((group) => group.length > 1);
     const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
-    const sortedGroups = [...codeshareGroups, ...regularGroups];
+    const gappedCodeshareGroups = codeshareGroups.filter((group) => hasRealGap(group));
+    const zeroGapCodeshareGroups = codeshareGroups.filter((group) => !hasRealGap(group));
+    const sortedGroups = [...gappedCodeshareGroups, ...zeroGapCodeshareGroups, ...regularGroups];
     if (sortedGroups.length === 0) return (
         <div>
             <Navbar />

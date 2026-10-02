@@ -62,6 +62,10 @@
     text-decoration: line-through;
 }
 
+.codeshare-card__price--equal {
+    color: var(--color-ink);
+}
+
 .codeshare-card__gap {
     border-top: 1px solid var(--color-border);
     padding-top: 12px;
@@ -81,6 +85,10 @@
     font-size: 20px;
     font-weight: 600;
     color: var(--color-teal);
+}
+
+.codeshare-card__gap--neutral .codeshare-card__gap-label {
+    color: var(--color-body);
 }
 
 .codeshare-card__booking {
@@ -123,4 +131,25 @@
     font-size: 12px;
     color: var(--color-body);
     margin-top: 8px;
+}
+.codeshare-card__explanation {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    background: var(--color-paper);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+}
+
+.codeshare-card__explanation-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.codeshare-card__explanation-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-body);
+    margin: 0;
 }
