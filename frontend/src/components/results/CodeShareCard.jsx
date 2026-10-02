@@ -75,7 +75,6 @@ function CodeShareCard({offers}){
                             この便は{cheapestOffer["Operating Carrier"]}が運航していますが、
                             {cheapestOffer["Owner Airline"]}と{mostExpensiveOffer["Owner Airline"]}が
                             それぞれ独自に発券・販売しています（コードシェア便）。
-                            同じ飛行機・同じ座席でも、発券会社によって価格が異なることがあります。
                         </p>
                     </div>
                     <span className="codeshare-card__booking-caption">
