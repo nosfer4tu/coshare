@@ -81,9 +81,11 @@ Small, reviewable diffs. Show the diff before explaining it.
   `api/_lib/codeshare_service.py` (checked on `Owner Airline IATA`).
 - **DB carrier columns store NAMES, not IATA codes** (`marketing_airline = 'China Airlines'`).
   Write SQL against names.
-- **Trend cutoff**: price-history aggregation excludes departure dates > ~10 months out
-  (airline schedule horizon skews averages). Applies to the chart AND the 最安月/最高値月
-  stat cards, server-side. Search itself is not date-limited.
+- **Trend cutoff**: price-history aggregation excludes rows where `departure_date >
+  recorded_at + 10 months` (airline schedule horizon skews averages; relative to when the row
+  was recorded, not to today). Rows with NULL `recorded_at` are excluded. Applies to the chart
+  AND the 最安月/最高値月 stat cards, server-side, in `api/_lib/trend_service.py` (the only place;
+  `local_server.py` and the Vercel handlers call it). Search itself is not date-limited.
 - Prices JPY; fixed rate ¥155/USD (real-time FX is post-demo roadmap).
 - Booking links: static map `frontend/src/constants/airlineBookingUrls.js`, keyed by
   IATA code, values are official-site URLs (Japan locale where available). URLs are
