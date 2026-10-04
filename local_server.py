@@ -41,7 +41,7 @@ def flights_search():
         result = normalized_duffel 
         save_search_cache(f"{p['origin']}-{p['destination']}", p['departure_date'], ",".join(p['passengers']), json.dumps(result), p['cabin_class'])
         for offer in result:
-            if offer['Currency'] == 'JPY':
+            if offer['Currency'] == 'JPY' and p['cabin_class'] == 'economy':
                 save_price_history(f"{p['origin']}-{p['destination']}", p['departure_date'], offer['Total Amount'], offer['Operating Carrier'], offer['Marketing Carrier'])
 
     return Response(json.dumps({"data": result}), status=200, mimetype='application/json')
@@ -70,7 +70,7 @@ def codeshare_detect():
         result = codeshare_response
         save_search_cache(f"{p['origin']}-{p['destination']}", p['departure_date'], ",".join(p['passengers']), json.dumps(result), p['cabin_class'])
         for offer in normalized_duffel:
-            if offer['Currency'] == 'JPY':
+            if offer['Currency'] == 'JPY' and p['cabin_class'] == 'economy':
                 save_price_history(f"{p['origin']}-{p['destination']}", p['departure_date'], offer['Total Amount'], offer['Operating Carrier'], offer['Marketing Carrier'])
 
     return Response(json.dumps({"data": result}), status=200, mimetype='application/json')
