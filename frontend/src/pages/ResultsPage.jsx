@@ -4,6 +4,7 @@ import FlightCard from "../components/results/FlightCard";
 import CodeShareCard from "../components/results/CodeShareCard";
 import PriceGapExplainer from "../components/results/PriceGapExplainer";
 import Navbar from "../components/common/Navbar";
+import TestDataNotice from "../components/common/TestDataNotice";
 import "./ResultsPage.css";
 import SkeletonLoader from "../components/common/SkeletonLoader";
 import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
@@ -190,6 +191,9 @@ function ResultsPage(){
                 <h1 className="results-page__title">{origin} → {destination}</h1>
                 <p className="results-page__subtitle">{departureDate} • {passengers?.length}名</p>
             </div>
+            <TestDataNotice>
+                表示している価格は、Duffel APIのテスト環境のデータです。実際の販売価格ではありません。ご予約の前に、必ず航空会社の公式サイトで価格をご確認ください。
+            </TestDataNotice>
             <p className="results-page__section-label">コードシェア便の価格差</p>
             <PriceGapExplainer />
             <div className="results-page__list">

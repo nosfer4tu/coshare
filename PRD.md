@@ -203,6 +203,7 @@ research task. Evidence of the FlightLabs investigation: `scripts/flightlabs_rep
       first; plain and factual, per PRODUCT.md and DESIGN.md; no new accent usage beyond
       the One Signal Rule). Files: frontend/src/pages/ResultsPage.jsx, TrendPage.jsx,
       a small shared component. Done when: SUCCESS disclosure item passes; eslint clean.
+      Status: done (frontend/src/components/common/TestDataNotice.jsx, TestDataNotice.css, frontend/src/constants/testDataNotice.js, frontend/src/pages/ResultsPage.jsx, frontend/src/pages/TrendPage.jsx)
 - 4.2 「データについて」 page, linked from the navbar: per source, what it provides and
       what it does not (from the Data strategy table). Files: frontend/src/pages/,
       App.jsx routes, Navbar.jsx. Done when: SUCCESS data-page item passes.

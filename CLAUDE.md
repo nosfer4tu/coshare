@@ -93,6 +93,8 @@ Small, reviewable diffs. Show the diff before explaining it.
 ## Environment
 - Duffel is in **TEST MODE**: prices are synthetic; ZZ offers appear in raw responses.
   Do not present prices as real-market data.
+- ResultsPage and TrendPage show a non-dismissible `TestDataNotice`; gated by
+  `SHOW_TEST_DATA_NOTICE` in `frontend/src/constants/testDataNotice.js` (set false only when real prices are wired in and verified).
 - Secrets: `DUFFEL_ACCESS_TOKEN` via `api/_lib/config.py` / `.env.local`. Never print or commit tokens.
 
 ## Testing discipline

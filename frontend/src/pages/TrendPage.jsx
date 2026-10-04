@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../components/common/Navbar";
+import TestDataNotice from "../components/common/TestDataNotice";
 import PriceTrendChart from "../components/results/PriceTrendChart";
 import '../components/common/SkeletonLoader.css'
 import { ErrorMessage } from "../components/common/StatusMessage";
@@ -87,6 +88,9 @@ function TrendPage(){
             <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '24px' }}>
                 取得データ: {results.length}件
             </p>
+            <TestDataNotice>
+                価格トレンドは、テスト環境で取得した価格データに基づく参考値です。実際の運賃の推移ではありません。
+            </TestDataNotice>
             <PriceTrendChart data={results} />
             {recommendation && (
                 <div style={{ marginTop: 24, display: 'flex', gap: 16 }}>
