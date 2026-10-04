@@ -1,4 +1,6 @@
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -107,8 +109,15 @@ class ValidateCheckTest(unittest.TestCase):
 
 class SeedFileTest(unittest.TestCase):
     def test_example_entries_are_skipped(self):
-        # The committed data file ships only the example entry, which must be skipped.
-        self.assertEqual(seed_verified_checks.load_records(), [])
+        # Uses a temporary data file, so it does not depend on what the real
+        # verified_checks_data.json currently holds.
+        example = make_record(example=True, notes="PLACEHOLDER ONLY")
+        real = make_record(route="CCC-DDD")
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "data.json"
+            path.write_text(json.dumps({"checks": [example, real]}), encoding="utf-8")
+            records = seed_verified_checks.load_records(path)
+        self.assertEqual(records, [real])
 
     def test_example_entry_is_itself_well_formed(self):
         import json

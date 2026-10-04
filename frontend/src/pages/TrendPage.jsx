@@ -4,7 +4,7 @@ import Navbar from "../components/common/Navbar";
 import TestDataNotice from "../components/common/TestDataNotice";
 import PriceTrendChart from "../components/results/PriceTrendChart";
 import '../components/common/SkeletonLoader.css'
-import { ErrorMessage } from "../components/common/StatusMessage";
+import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
 
 function TrendPage(){
     const location = useLocation();
@@ -91,6 +91,10 @@ function TrendPage(){
             <TestDataNotice>
                 価格トレンドは、テスト環境で取得した価格データに基づく参考値です。実際の運賃の推移ではありません。
             </TestDataNotice>
+            {recommendation?.reason === 'no_data' ? (
+                <EmptyMessage title="この路線の価格データはまだありません。" body="別の路線で試してみてください" />
+            ) : (
+            <>
             <PriceTrendChart data={results} />
             {recommendation && (
                 <div style={{ marginTop: 24, display: 'flex', gap: 16 }}>
@@ -113,6 +117,8 @@ function TrendPage(){
                         </p>
                     </div>
                 </div>
+            )}
+            </>
             )}
         </div>
     </div>

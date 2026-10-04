@@ -78,9 +78,9 @@ class QueryWiringTest(unittest.TestCase):
         row(date(2026, 12, 29), datetime(2026, 8, 5), 50000),   # kept
     ]
 
-    def fake_db(self):
+    def fake_db(self, rows=None):
         cursor = mock.Mock()
-        cursor.fetchall.return_value = list(self.ROWS)
+        cursor.fetchall.return_value = list(self.ROWS if rows is None else rows)
         db = mock.MagicMock()
         db.__enter__.return_value = (mock.Mock(), cursor)
         return mock.Mock(return_value=db)
@@ -98,6 +98,23 @@ class QueryWiringTest(unittest.TestCase):
             "cheapest_month": 12, "cheapest_price": 50000,
             "most_expensive_month": 7, "most_expensive_price": 100000,
         })
+
+    EMPTY_RECOMMENDATION = {
+        "cheapest_month": None, "cheapest_price": None,
+        "most_expensive_month": None, "most_expensive_price": None,
+        "reason": "no_data",
+    }
+
+    def test_recommendation_without_rows_returns_empty_shape(self):
+        with mock.patch.object(trend_service, "get_db", self.fake_db(rows=[])):
+            result = trend_service.get_price_recommendation("AAA-BBB")
+        self.assertEqual(result, self.EMPTY_RECOMMENDATION)
+
+    def test_recommendation_with_all_rows_outside_horizon_returns_empty_shape(self):
+        rows = [row(date(2027, 7, 13), datetime(2026, 8, 5), 300000), row(date(2026, 12, 29), None, 50000)]
+        with mock.patch.object(trend_service, "get_db", self.fake_db(rows=rows)):
+            result = trend_service.get_price_recommendation("AAA-BBB")
+        self.assertEqual(result, self.EMPTY_RECOMMENDATION)
 
 
 if __name__ == "__main__":

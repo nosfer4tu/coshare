@@ -55,6 +55,14 @@ def get_annual_price_trend(route):
 
 def get_price_recommendation(route):
     averages = month_averages(_fetch_horizon_rows(route))
+    if not averages:
+        return {
+            "cheapest_month": None,
+            "cheapest_price": None,
+            "most_expensive_month": None,
+            "most_expensive_price": None,
+            "reason": "no_data"
+        }
     cheapest = min(averages.items(), key=lambda item: item[1])
     most_expensive = max(averages.items(), key=lambda item: item[1])
     return {
