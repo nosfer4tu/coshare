@@ -29,3 +29,4 @@ graphify-out
 
 # Raw API dumps (exploratory scripts) - may contain synthetic/test data, keep out of history
 scripts/*dump*.json
+*dump*.json
