@@ -1,7 +1,8 @@
 import "./FlightCard.css"
 import FlightDetails, { DetailRow } from "./FlightDetails";
 import { hasDetails, formatFlightNumber, formatPoint } from "../../utils/flightDetails";
-function FlightCard({offer}){
+import VerifiedBadge from "./VerifiedBadge";
+function FlightCard({offer, getVerifiedCheck}){
     return(
         <div className="flight-card">
             <div className="flight-card__summary">
@@ -11,6 +12,7 @@ function FlightCard({offer}){
                         : offer["Operating Carrier"] !== offer["Marketing Carrier"] ?
                         <p>運航: {offer["Operating Carrier"]} / 販売: {offer["Marketing Carrier"]}</p> :
                         <p>{offer["Operating Carrier"]}</p>}
+                    <VerifiedBadge check={getVerifiedCheck?.(offer["Owner Airline"])} />
                 </div>
                 <div className="flight-card__times">
                     <span>{new Date(offer["Departure Time"]).toLocaleString('ja-JP')}</span>

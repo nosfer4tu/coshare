@@ -38,6 +38,29 @@ def save_price_history(route, departure_date, price_jpy, operating_airline, mark
         cursor.execute("INSERT INTO price_history (route, departure_date, price_jpy, operating_airline, marketing_airline) VALUES (%s, %s, %s, %s, %s)", (route, departure_date, price_jpy, operating_airline, marketing_airline))
         conn.commit()
 
+VERIFIED_CHECK_COLUMNS = (
+    "id, route, check_date, flight_date, carrier_checked, sandbox_source, "
+    "sandbox_price_jpy, real_price_jpy, real_source_url, verdict, notes, created_at"
+)
+
+def get_verified_checks(route=None, flight_date=None):
+    conditions = []
+    params = []
+    if route:
+        conditions.append("route = %s")
+        params.append(route)
+    if flight_date:
+        conditions.append("flight_date = %s")
+        params.append(flight_date)
+    where = (" WHERE " + " AND ".join(conditions)) if conditions else ""
+    with get_db() as (conn, cursor):
+        cursor.execute(
+            f"SELECT {VERIFIED_CHECK_COLUMNS} FROM verified_checks{where} ORDER BY check_date DESC, id DESC",
+            params,
+        )
+        result = cursor.fetchall()
+    return result
+
 def get_cached_destinations(destination_code):
     with get_db() as (conn, cursor):
         cursor.execute("""

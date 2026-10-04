@@ -1,0 +1,30 @@
+{
+  "_schema": {
+    "_comment": "Fill 'checks' with manual ground-truth checks. Entries with \"example\": true are skipped by seed_verified_checks.py. Validation lives in api/_lib/verified_checks.py (validate_check).",
+    "route": "string, AAA-AAA (uppercase IATA codes), e.g. the origin and destination airports joined by a hyphen",
+    "check_date": "ISO date YYYY-MM-DD, the day you looked at the official site",
+    "flight_date": "ISO date YYYY-MM-DD, the departure date that was checked",
+    "carrier_checked": "airline NAME as shown on result cards (the display carrier), not an IATA code",
+    "sandbox_source": "'duffel' (Duffel test-mode search) or 'flightlabs' (FlightLabs)",
+    "sandbox_price_jpy": "positive integer (JPY, the tool price converted at the fixed rate); null or 0 allowed only for 'not_comparable'",
+    "real_price_jpy": "positive integer (JPY, the official-site price); null or 0 allowed only for 'not_comparable'",
+    "real_source_url": "string, must start with https://",
+    "verdict": "'match' = abs(sandbox - real) / real <= 5%; 'mismatch' = difference above 5%; 'not_comparable' = the itinerary could not be matched on the official site (its notes must not imply a verdict)",
+    "notes": "optional string or null"
+  },
+  "checks": [
+    {
+      "example": true,
+      "route": "AAA-BBB",
+      "check_date": "2000-01-01",
+      "flight_date": "2000-02-01",
+      "carrier_checked": "Example Airlines",
+      "sandbox_source": "duffel",
+      "sandbox_price_jpy": 10000,
+      "real_price_jpy": 10000,
+      "real_source_url": "https://example.com/",
+      "verdict": "match",
+      "notes": "PLACEHOLDER ONLY: format example, not real data. The seed script skips entries with example=true."
+    }
+  ]
+}

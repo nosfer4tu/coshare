@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 import sys
 import os
 import json
+from datetime import date
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'api', '_lib'))
 
@@ -103,6 +104,24 @@ def trends_recommend():
         return Response(json.dumps(result, default=str), status=200, mimetype='application/json')
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), status=500, mimetype='application/json')
+
+@app.route('/api/verified-checks')
+def verified_checks():
+    from db import get_verified_checks
+
+    route = request.args.get('route')
+    flight_date = request.args.get('flightDate')
+    if flight_date:
+        try:
+            date.fromisoformat(flight_date)
+        except ValueError:
+            return Response(json.dumps({"error": "flightDateはYYYY-MM-DD形式で指定してください"}), status=400, mimetype='application/json')
+
+    try:
+        result = get_verified_checks(route, flight_date)
+    except Exception:
+        return Response(json.dumps({"error": "照合記録の取得に失敗しました"}), status=500, mimetype='application/json')
+    return Response(json.dumps({"data": result}, default=str), status=200, mimetype='application/json')
 
 @app.route('/api/places/suggestions')
 def places_suggestions():

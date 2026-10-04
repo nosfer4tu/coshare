@@ -10,6 +10,7 @@ import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
 import SearchBar from "../components/search/SearchBar";
 import SearchModeSelector from "../components/search/SearchModeSelector";
 import { hasRealGap } from "../utils/codeshareGap";
+import { findBadgeCheck } from "../utils/verifiedChecks";
 function ResultsPage(){
     const location = useLocation();
     const navigate = useNavigate();
@@ -33,6 +34,10 @@ function ResultsPage(){
     const [ results, setResults] = useState([]);
     const [ loading, setLoading] = useState(true);
     const [ error, setError] = useState(null);
+    const [verifiedChecks, setVerifiedChecks] = useState([]);
+    // Badges follow the committed search (URL params), not the form fields being edited.
+    const searchedRoute = `${searchParams.get("origin") ?? ""}-${searchParams.get("destination") ?? ""}`;
+    const searchedDate = searchParams.get("departureDate") ?? "";
 
     const handleSearch = () => {
         const newPassengers = [
@@ -117,6 +122,17 @@ function ResultsPage(){
         fetchData();
     }, [searchParams, navigate]);
 
+    // One request per search (not per card). A failure just means no badges.
+    useEffect(() => {
+        let cancelled = false;
+        const params = new URLSearchParams({ route: searchedRoute, flightDate: searchedDate });
+        fetch("/api/verified-checks?" + params.toString())
+            .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.status))))
+            .then((data) => { if (!cancelled) setVerifiedChecks(Array.isArray(data.data) ? data.data : []); })
+            .catch(() => { if (!cancelled) setVerifiedChecks([]); });
+        return () => { cancelled = true; };
+    }, [searchedRoute, searchedDate]);
+
     if (loading) return (
         <div>
             <Navbar />
@@ -139,6 +155,8 @@ function ResultsPage(){
     const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
     const gappedCodeshareGroups = codeshareGroups.filter((group) => hasRealGap(group));
     const zeroGapCodeshareGroups = codeshareGroups.filter((group) => !hasRealGap(group));
+    const getVerifiedCheck = (carrierName) =>
+        findBadgeCheck(verifiedChecks, { route: searchedRoute, flightDate: searchedDate, carrierName });
     const sortedGroups = [...gappedCodeshareGroups, ...zeroGapCodeshareGroups, ...regularGroups];
     if (sortedGroups.length === 0) return (
         <div>
@@ -178,8 +196,8 @@ function ResultsPage(){
                 {sortedGroups.map((group) => {
                     if (searchMode === "codeshare" && group.length === 1 && !group[0]["is Codeshare"]) return null;
                     return group.length > 1
-                        ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} />
-                        : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} />
+                        ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} getVerifiedCheck={getVerifiedCheck} />
+                        : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} getVerifiedCheck={getVerifiedCheck} />
                 })}
             </div>
         </div>

@@ -28,3 +28,14 @@
     color: var(--color-body);
     margin: 0;
 }
+
+.navbar__link {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--color-body);
+    white-space: nowrap;
+}
+
+.navbar__link:hover {
+    color: var(--color-ink);
+}

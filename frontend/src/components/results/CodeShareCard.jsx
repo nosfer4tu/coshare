@@ -2,9 +2,10 @@ import './CodeShareCard.css'
 import airlineBookingUrls from '../../constants/airlineBookingUrls';
 import { getPriceExtremes } from '../../utils/codeshareGap';
 import FlightDetails, { DetailRow } from './FlightDetails';
+import VerifiedBadge from './VerifiedBadge';
 import { hasDetails, formatFlightNumber, formatPoint } from '../../utils/flightDetails';
 
-function CodeShareCard({offers}){
+function CodeShareCard({offers, getVerifiedCheck}){
     const { cheapestOffer, mostExpensiveOffer, priceGap } = getPriceExtremes(offers);
     const hasGap = priceGap > 0;
     if (cheapestOffer["Owner Airline"] === mostExpensiveOffer["Owner Airline"]) return null;
@@ -22,13 +23,19 @@ function CodeShareCard({offers}){
             </div>
             <div className="codeshare-card__comparison">
                 <div className="codeshare-card__row">
-                    <span className="codeshare-card__airline">{hasGap && '✓ '}{cheapestOffer["Owner Airline"]}</span>
+                    <span className="codeshare-card__airline-group">
+                        <span className="codeshare-card__airline">{hasGap && '✓ '}{cheapestOffer["Owner Airline"]}</span>
+                        <VerifiedBadge check={getVerifiedCheck?.(cheapestOffer["Owner Airline"])} />
+                    </span>
                     <span className={`codeshare-card__price ${hasGap ? 'codeshare-card__price--cheap' : 'codeshare-card__price--equal'}`}>
                         {cheapestOffer["Total Amount"].toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })}
                     </span>
                 </div>
                 <div className="codeshare-card__row">
-                    <span className="codeshare-card__airline">{mostExpensiveOffer["Owner Airline"]}</span>
+                    <span className="codeshare-card__airline-group">
+                        <span className="codeshare-card__airline">{mostExpensiveOffer["Owner Airline"]}</span>
+                        <VerifiedBadge check={getVerifiedCheck?.(mostExpensiveOffer["Owner Airline"])} />
+                    </span>
                     <span className={`codeshare-card__price ${hasGap ? 'codeshare-card__price--expensive' : 'codeshare-card__price--equal'}`}>
                         {mostExpensiveOffer["Total Amount"].toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })}
                     </span>

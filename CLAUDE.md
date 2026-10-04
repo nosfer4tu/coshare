@@ -107,6 +107,31 @@ Small, reviewable diffs. Show the diff before explaining it.
   the code writes strings like `'adult'` / `'adult,adult'`. Check the live Neon schema before
   writing SQL against it.
 
+## verified_checks (manual ground-truth price checks)
+- Table (Neon, created by hand; never write to it from code except `seed_verified_checks.py`, which
+  the owner runs): `id, route, check_date, flight_date, carrier_checked, sandbox_source,
+  sandbox_price_jpy, real_price_jpy, real_source_url, verdict, notes, created_at`.
+  `carrier_checked` is the airline NAME (the card's display carrier), not an IATA code.
+- Values: `sandbox_source` = `duffel` | `flightlabs`; `verdict` = `match` | `mismatch` |
+  `not_comparable`. `match` means `abs(sandbox - real) / real <= 5%`
+  (`MATCH_TOLERANCE` in `api/_lib/verified_checks.py`, mirrored by `MATCH_TOLERANCE_PERCENT` in
+  `frontend/src/utils/verifiedChecks.js`; change both). It does NOT mean identical.
+  `not_comparable` = the itinerary could not be matched on the official site (prices may be null/0).
+- Data in via `verified_checks_data.json` + `python3 seed_verified_checks.py [--dry-run]`;
+  `validate_check` in `api/_lib/verified_checks.py` is the single validator. No real check data
+  is committed except what the owner adds to that JSON.
+- Read path: `GET /api/verified-checks?route=KIX-TPE&flightDate=YYYY-MM-DD` (both optional, camelCase)
+  → `{"data": [...]}` with the table's column names. `local_server.py` only; there is NO Vercel
+  handler (`/api/places/suggestions` has none either).
+- Verification page `/verification` (linked from the navbar) lists every check, mismatches included.
+- Card badge (`VerifiedBadge`, on CodeShareCard rows and FlightCard): shown only when
+  route + `flight_date == searched departure date` + carrier name (trimmed, case-insensitive,
+  exact; never flight number) match, `sandbox_source === CARD_SANDBOX_SOURCE`
+  (`frontend/src/utils/verifiedChecks.js`, `'duffel'`; **change it when another price source is
+  wired into the cards**) and the latest matching check has verdict `match`.
+  Badges are date-specific records ("{check_date}に公式サイトと照合"), not a claim about the
+  current price. Checks are fetched once per results search in `ResultsPage.jsx`.
+
 ## Definition of Done — run before reporting success
 1. Both servers restart cleanly; no tracebacks on boot.
 2. Fresh-date search KIX→TPE renders CodeShareCards with real airline names —

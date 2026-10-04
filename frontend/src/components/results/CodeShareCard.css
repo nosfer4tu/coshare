@@ -40,6 +40,13 @@
     align-items: center;
 }
 
+.codeshare-card__airline-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
 .codeshare-card__airline {
     font-size: 15px;
     font-weight: 500;

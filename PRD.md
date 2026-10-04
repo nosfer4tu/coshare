@@ -64,7 +64,7 @@ A model can verify each item mechanically:
 - [ ] `docs/data-verification.md` exists and matches the Data strategy table (sources, roles,
       limits, ruled-out list), with no commercial terms or correspondence details.
 - [ ] Verified badges: a route/carrier with a `verified_checks` row shows a badge with the
-      check date and a link to the source; a route/carrier without a row shows none.
+      check date, linking to the verification page; a route/carrier without a row shows none.
       At least TODO(Gabriel) checks are recorded.
 - [ ] ODPT cross-check (if registration succeeds): a script compares ODPT JAL/ANA codeshare
       data with the app's pairs for chosen routes and prints agreements and mismatches.
@@ -211,9 +211,11 @@ research task. Evidence of the FlightLabs investigation: `scripts/flightlabs_rep
       Neon, and creating it if not, is a human step (DDL: output SQL, do not run).
       Files: api/_lib/db.py (read function), local_server.py (+ matching `api/` handler).
       Done when: curl returns a seeded row; empty list for an unverified route.
+      Status: done (api/_lib/db.py, local_server.py, api/_lib/verified_checks.py; Vercel handler skipped by decision)
 - 4.4 Verified badge on CodeShareCard: shows check date and source link when a row matches
       route + carrier; nothing otherwise. Files: frontend/src/components/results/
       CodeShareCard.jsx (+ css). Done when: SUCCESS verified-badge item passes.
+      Status: done (frontend/src/components/results/VerifiedBadge.jsx, CodeShareCard.jsx, FlightCard.jsx, frontend/src/utils/verifiedChecks.js, frontend/src/pages/VerificationPage.jsx)
 - 4.5 Human task: record the manual checks (see HANDOFF).
 
 ### M5 — Multi-source plan
