@@ -43,6 +43,10 @@ Small, reviewable diffs. Show the diff before explaining it.
 - **Normalized offer keys are Title Case with spaces**: `'Total Amount'`, `'Currency'`,
   `'Marketing Carrier'`, `'Operating Carrier'`, … Do NOT rename to snake_case/camelCase;
   React components and `save_price_history` read these exact strings.
+- **Detail keys (additive, from `slices[0].segments[0]`)**: `'Marketing Flight Number'`,
+  `'Operating Flight Number'` (may be null), `'Departure Airport'`, `'Arrival Airport'`,
+  `'Segment Count'` (segments in slice 0). Absent on `search_cache` rows written before they
+  existed — the UI omits absent fields and only offers expandable details when `Segment Count === 1`.
 - **Display carrier = `slices[0].segments[0].marketing_carrier`** (name + iata_code),
   flight number from `marketing_carrier_flight_number`. Duffel's `offer.owner` is the
   *ticketing* entity, not the seller — never use it for display. Fallback to owner only

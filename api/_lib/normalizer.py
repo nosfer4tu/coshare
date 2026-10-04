@@ -19,6 +19,13 @@ def normalize_offers(raw_response):
             offer_dict["Currency"] = "JPY"
         offer_dict["Owner Airline"] = display_carrier.get("name") or offers['owner']['name']
         offer_dict["Owner Airline IATA"] = display_carrier.get("iata_code") or offers['owner']['iata_code']
+        # Additive detail keys, all from slices[0].segments[0] (same segment as the display carrier).
+        # Set before the loop below, which only overwrites the keys it assigns itself.
+        offer_dict["Marketing Flight Number"] = first_segment[0].get("marketing_carrier_flight_number")
+        offer_dict["Operating Flight Number"] = first_segment[0].get("operating_carrier_flight_number")
+        offer_dict["Departure Airport"] = (first_segment[0].get("origin") or {}).get("iata_code")
+        offer_dict["Arrival Airport"] = (first_segment[0].get("destination") or {}).get("iata_code")
+        offer_dict["Segment Count"] = len((offers.get("slices") or [{}])[0].get("segments") or [])
         for flight_slice in offers.get("slices",[]):
             for segment in flight_slice.get("segments", []):
                 operating_carrier = segment.get("operating_carrier", {})

@@ -1,6 +1,8 @@
 import './CodeShareCard.css'
 import airlineBookingUrls from '../../constants/airlineBookingUrls';
 import { getPriceExtremes } from '../../utils/codeshareGap';
+import FlightDetails, { DetailRow } from './FlightDetails';
+import { hasDetails, formatFlightNumber, formatPoint } from '../../utils/flightDetails';
 
 function CodeShareCard({offers}){
     const { cheapestOffer, mostExpensiveOffer, priceGap } = getPriceExtremes(offers);
@@ -81,6 +83,27 @@ function CodeShareCard({offers}){
                         公式サイトで同じ便を検索してください
                     </span>
                 </div>
+            )}
+            {hasDetails(cheapestOffer) && hasDetails(mostExpensiveOffer) && (
+                <FlightDetails>
+                    <DetailRow label="出発" value={formatPoint(cheapestOffer["Departure Airport"], cheapestOffer["Departure Time"])} />
+                    <DetailRow label="到着" value={formatPoint(cheapestOffer["Arrival Airport"], cheapestOffer["Arrival Time"])} />
+                    <DetailRow
+                        label="運航便名"
+                        value={formatFlightNumber(
+                            cheapestOffer["Operating IATA"],
+                            cheapestOffer["Operating Flight Number"] ?? mostExpensiveOffer["Operating Flight Number"],
+                            cheapestOffer["Operating Carrier"]
+                        )}
+                    />
+                    {[cheapestOffer, mostExpensiveOffer].map((offer) => (
+                        <DetailRow
+                            key={offer["Offer ID"]}
+                            label={`${offer["Owner Airline"]}の便名`}
+                            value={formatFlightNumber(offer["Marketing IATA"], offer["Marketing Flight Number"])}
+                        />
+                    ))}
+                </FlightDetails>
             )}
         </div>
 
