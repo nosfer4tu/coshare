@@ -24,6 +24,16 @@ Small, reviewable diffs. Show the diff before explaining it.
   browser console, Flask is down — restart it before debugging anything else.
 - After any agent session that spawned test servers (e.g. Playwright), assume dev
   servers are dead; restart both before manual testing.
+- **Check before starting a server**: run `lsof -nP -iTCP:8000 -sTCP:LISTEN` and
+  `lsof -nP -iTCP:5173 -sTCP:LISTEN`. If a server is already running and responds, reuse it
+  for verification instead of starting another.
+- **Only stop processes you started in this session.** Never kill a process you did not
+  start. If the port is held by something else, report it and ask the owner.
+- **If you start Flask or Vite for a check, stop it before you finish** (stop the parent
+  process first; Flask debug mode runs a reloader parent and child). State in your report
+  which servers you started and that they are stopped.
+- The Flask debug reloader picks up code edits, so a restart is usually not needed. If you
+  think one is, ask the owner.
 
 ## Architecture
 - `frontend/` React + Vite SPA. Pages: HomePage, ResultsPage, TrendPage, DestinationPage.
