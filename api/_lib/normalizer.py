@@ -39,5 +39,8 @@ def normalize_offers(raw_response):
                 offer_dict["is Codeshare"] = False
                 if operating_carrier.get("iata_code") != marketing_carrier.get("iata_code") or offers['owner']['iata_code'] != segment.get("operating_carrier", {}).get("iata_code"):
                     offer_dict["is Codeshare"] = True
+                # Badge flag: sold under a different code than the one operating. Unlike
+                # 'is Codeshare' it ignores offer.owner (the ticketing entity).
+                offer_dict["is Marketing Codeshare"] = marketing_carrier.get("iata_code") != operating_carrier.get("iata_code")
         results.append(offer_dict)
     return results

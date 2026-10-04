@@ -58,7 +58,9 @@ Small, reviewable diffs. Show the diff before explaining it.
   and the first segment for others:
   - *Last segment* (overwritten per segment): `'Operating Carrier'`, `'Operating IATA'`,
     `'Marketing Carrier'`, `'Marketing IATA'`, `'Departure Time'`, `'Arrival Time'`,
-    `'is Codeshare'` (also compares `offer.owner` to the operating carrier).
+    `'is Codeshare'` (also compares `offer.owner` to the operating carrier),
+    `'is Marketing Codeshare'` (Marketing IATA != Operating IATA only; `offer.owner` is ignored;
+    absent on `search_cache` rows written before it existed).
   - *First segment* (`slices[0].segments[0]`, set before the loop): `'Owner Airline'`,
     `'Owner Airline IATA'`, and the additive detail keys `'Marketing Flight Number'`,
     `'Operating Flight Number'` (may be null), `'Departure Airport'`, `'Arrival Airport'`,
@@ -140,16 +142,15 @@ Small, reviewable diffs. Show the diff before explaining it.
   camelCase (`departureDate`, `cabinClass`).
 - **Vite proxy target.** `frontend/vite.config.js` proxies `/api` to `http://localhost:8000`,
   which works for the browser in dev. The 127.0.0.1 rule applies to scripts and `curl`.
-- **`is Codeshare` semantics.** Set in `api/_lib/normalizer.py` lines 39-41, inside the segment
-  loop (last segment wins). It is `True` when operating IATA != marketing IATA OR
-  `offer.owner` IATA != operating IATA. The second clause uses `offer.owner` (the ticketing
-  entity, not the seller), so a solo flight ticketed through an intermediary (e.g. owner `HR`,
-  marketing = operating = `7C`) gets `is Codeshare = true` and a コードシェア便 badge on
-  `FlightCard`.
-- **Do NOT change the `is Codeshare` rule without checking `/api/codeshare/detect` first.**
-  `get_codeshare_offers` filters on this flag, so the rule may be what keeps own-code offers
-  from HR-ticketed carriers (e.g. `CI`) in the pair list in codeshare mode. `ResultsPage.jsx`
-  also reads the flag (singleton groups are dropped in codeshare mode unless it is true).
+- **`is Codeshare` is unchanged on purpose.** Its `offer.owner` clause makes it `True` for
+  HR-ticketed own-code offers (e.g. owner `HR`, marketing = operating = `7C`). That is what
+  keeps HR-ticketed own-code offers such as `CI` and `KE` in the codeshare pairs
+  (`get_codeshare_offers`; checked in the analysis). `ResultsPage.jsx` also reads it
+  (singleton groups are dropped in codeshare mode unless it is true). Do not change the rule
+  without checking `/api/codeshare/detect` first.
+- **The コードシェア便 badge reads `'is Marketing Codeshare'`**, not `'is Codeshare'`, so solo
+  flights ticketed through an intermediary no longer get a false badge. Rows cached before the
+  key existed show no badge.
 
 ## Open questions (TODO — verify, then delete this section)
 - Versions observed locally (not pinned in the repo: no `.nvmrc`, no `engines`): Node v24.14.0,

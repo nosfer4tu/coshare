@@ -20,7 +20,7 @@ function FlightCard({offer}){
                 <p className="flight-card__price">
                     {offer["Total Amount"].toLocaleString('ja-JP', {style: 'currency', currency: 'JPY'})}
                 </p>
-                {offer["is Codeshare"] &&
+                {offer["is Marketing Codeshare"] &&
                     <span className="flight-card__codeshare-badge">コードシェア便</span>
                 }
             </div>
