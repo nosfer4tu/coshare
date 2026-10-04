@@ -25,6 +25,42 @@
       "real_source_url": "https://example.com/",
       "verdict": "match",
       "notes": "PLACEHOLDER ONLY: format example, not real data. The seed script skips entries with example=true."
+    },
+    {
+      "route": "NRT-GRU",
+      "check_date": "2026-08-09",
+      "flight_date": "2026-11-26",
+      "carrier_checked": "JAL",
+      "sandbox_source": "duffel",
+      "sandbox_price_jpy": 980546,
+      "real_price_jpy": null,
+      "real_source_url": "https://www.jal.co.jp",
+      "verdict": "not_comparable",
+      "notes": "JAL/LATAM codeshare. Duffel card: 20:50 departure, 05:05 next day, JPY 980,546 (travel date 2026-11-26 came from the app search; the JAL screenshots did not show it). JAL's site showed a different itinerary, 18:50 departure, JPY 538,260, so the two are not the same flight. Check date inferred from the phone screenshot clock (00:01 JST); original screenshots not retained."
+    },
+    {
+      "route": "NRT-GRU",
+      "check_date": "2026-08-09",
+      "flight_date": "2026-11-26",
+      "carrier_checked": "Iberia",
+      "sandbox_source": "duffel",
+      "sandbox_price_jpy": 106011,
+      "real_price_jpy": null,
+      "real_source_url": "https://www.iberia.com",
+      "verdict": "not_comparable",
+      "notes": "Duffel card: 19:21 departure, 08:35 arrival, JPY 106,011. On Iberia's site, 2026-11-26 was shown as unavailable; in August, Nov 23, 24, 30 and Dec 1 showed JPY 325,760. Not compared. Rechecked 2026-10-04: 2026-11-26 still shown as unavailable (screenshot retained). Check date inferred from the phone screenshot clock (00:04 JST); original August screenshots not retained."
+    },
+    {
+      "route": "NRT-OKA",
+      "check_date": "2026-08-12",
+      "flight_date": "2026-11-26",
+      "carrier_checked": "Jetstar Japan",
+      "sandbox_source": "flightlabs",
+      "sandbox_price_jpy": 8215,
+      "real_price_jpy": 7890,
+      "real_source_url": "https://www.jetstar.com/jp/ja/home",
+      "verdict": "match",
+      "notes": "Matched by departure time; the site page shows times and prices, not flight numbers. 18:45 (GK307) in FlightLabs is the largest of three: JPY 8,215 vs site 7,890 (+4.1%). 15:40 (GK305): 9,300 vs 8,990 (+3.4%). 12:40 (GK301): 11,160 vs 10,990 (+1.5%). FlightLabs prices are whole USD converted at a fixed 155 JPY/USD. Site fares were 'displayed fare, seats left' and can change. FlightLabs data fetched on 2026-08-12 (request file last written 16:25 JST); original screenshots not retained."
     }
   ]
 }
