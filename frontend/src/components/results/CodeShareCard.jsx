@@ -41,6 +41,9 @@ function CodeShareCard({offers, getVerifiedCheck}){
                     </span>
                 </div>
             </div>
+            <span className="codeshare-card__booking-caption">
+                ※各社の最安運賃どうしの比較です。運賃の種類(手荷物・変更条件)は異なる場合があります。
+            </span>
             {hasGap ? (
                 <div className="codeshare-card__gap">
                     <span className="codeshare-card__gap-label">価格差</span>
