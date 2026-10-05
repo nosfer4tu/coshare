@@ -12,7 +12,7 @@ function FlightCard({offer, getVerifiedCheck}){
                         : offer["Operating Carrier"] !== offer["Marketing Carrier"] ?
                         <p>運航: {offer["Operating Carrier"]} / 販売: {offer["Marketing Carrier"]}</p> :
                         <p>{offer["Operating Carrier"]}</p>}
-                    <VerifiedBadge check={getVerifiedCheck?.(offer["Owner Airline"])} />
+                    <VerifiedBadge check={getVerifiedCheck?.(offer["Owner Airline"], offer["Total Amount"])} />
                 </div>
                 <div className="flight-card__times">
                     <span>{new Date(offer["Departure Time"]).toLocaleString('ja-JP')}</span>

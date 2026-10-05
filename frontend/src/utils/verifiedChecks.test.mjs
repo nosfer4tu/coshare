@@ -7,7 +7,7 @@ import {
     priceDifferencePercent,
 } from './verifiedChecks.js';
 
-const card = { route: 'AAA-BBB', flightDate: '2026-03-04', carrierName: 'Example Airlines' };
+const card = { route: 'AAA-BBB', flightDate: '2026-03-04', carrierName: 'Example Airlines', displayedPrice: 10000 };
 
 const check = (overrides = {}) => ({
     id: 1,
@@ -52,6 +52,35 @@ test('matchesCard: empty or missing carrier never matches', () => {
 test('findBadgeCheck: a matching check from the card source with verdict match gives a badge', () => {
     const c = check();
     assert.equal(findBadgeCheck([c], card), c);
+});
+
+test('findBadgeCheck: a changed displayed price gives no badge', () => {
+    assert.equal(findBadgeCheck([check()], { ...card, displayedPrice: 10001 }), null);
+    assert.equal(findBadgeCheck([check()], { ...card, displayedPrice: 9999 }), null);
+});
+
+test('findBadgeCheck: the price is compared as the card rounds it (whole yen)', () => {
+    const c = check();
+    assert.equal(findBadgeCheck([c], { ...card, displayedPrice: 10000.4 }), c);
+    assert.equal(findBadgeCheck([c], { ...card, displayedPrice: 10000.5 }), null);
+});
+
+test('findBadgeCheck: a missing displayed price or check price gives no badge', () => {
+    assert.equal(findBadgeCheck([check()], { ...card, displayedPrice: undefined }), null);
+    assert.equal(findBadgeCheck([check()], { ...card, displayedPrice: null }), null);
+    assert.equal(findBadgeCheck([check({ sandbox_price_jpy: null })], { ...card, displayedPrice: 0 }), null);
+    assert.equal(findBadgeCheck([check({ sandbox_price_jpy: 0 })], { ...card, displayedPrice: null }), null);
+});
+
+test('findBadgeCheck: a mismatch verdict gives no badge even at the same price', () => {
+    assert.equal(findBadgeCheck([check({ verdict: 'mismatch' })], card), null);
+});
+
+test('findBadgeCheck: among same-day matches, the check at the displayed price is returned', () => {
+    const a = check({ id: 1, sandbox_price_jpy: 10000 });
+    const b = check({ id: 2, sandbox_price_jpy: 12000 });
+    assert.equal(findBadgeCheck([a, b], card), a);
+    assert.equal(findBadgeCheck([a, b], { ...card, displayedPrice: 12000 }), b);
 });
 
 test('findBadgeCheck: only the matching check yields a badge (one match, one mismatch)', () => {

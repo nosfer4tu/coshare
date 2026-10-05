@@ -24,10 +24,24 @@ export function matchesCard(check, { route, flightDate, carrierName }) {
         && normalizeCarrier(check.carrier_checked) === carrier;
 }
 
-// The check that may be shown as a badge on a card, or null.
+// The yen amount a card prints for an offer's 'Total Amount'. The cards format it as JPY
+// (zero fraction digits, halves round up), which for prices is Math.round.
+const displayedYen = (amount) => Math.round(Number(amount));
+
+// A check only vouches for the price it looked at: the card's displayed price must equal
+// the check's sandbox_price_jpy exactly. A missing price on either side never matches.
+const pricesEqual = (displayedPrice, sandboxPrice) => {
+    if (displayedPrice == null) return false;
+    const shown = displayedYen(displayedPrice);
+    return Number.isInteger(shown) && Number.isInteger(sandboxPrice) && shown === sandboxPrice;
+};
+
+// The check that may be shown as a badge on a card row, or null.
 // Among checks for this card from the card's own price source, only the most recent
 // check_date counts, and it must have verdict 'match'. If that latest check is a mismatch
 // (or not_comparable), no badge is shown even when an older check matched.
+// card.displayedPrice is the row's price as the card shows it; the badge needs a check
+// with that exact sandbox_price_jpy, so a fresh fetch at another price loses the badge.
 export function findBadgeCheck(checks, card) {
     const candidates = (checks ?? []).filter(
         (check) => matchesCard(check, card) && check.sandbox_source === CARD_SANDBOX_SOURCE
@@ -35,7 +49,8 @@ export function findBadgeCheck(checks, card) {
     if (candidates.length === 0) return null;
     const latestDate = candidates.reduce((max, c) => (c.check_date > max ? c.check_date : max), '');
     const latest = candidates.filter((c) => c.check_date === latestDate);
-    return latest.every((c) => c.verdict === VERDICT_MATCH) ? latest[0] : null;
+    if (!latest.every((c) => c.verdict === VERDICT_MATCH)) return null;
+    return latest.find((c) => pricesEqual(card.displayedPrice, c.sandbox_price_jpy)) ?? null;
 }
 
 const isPresentPrice = (value) => typeof value === 'number' && Number.isFinite(value) && value !== 0;

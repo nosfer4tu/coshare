@@ -25,7 +25,7 @@ function CodeShareCard({offers, getVerifiedCheck}){
                 <div className="codeshare-card__row">
                     <span className="codeshare-card__airline-group">
                         <span className="codeshare-card__airline">{hasGap && '✓ '}{cheapestOffer["Owner Airline"]}</span>
-                        <VerifiedBadge check={getVerifiedCheck?.(cheapestOffer["Owner Airline"])} />
+                        <VerifiedBadge check={getVerifiedCheck?.(cheapestOffer["Owner Airline"], cheapestOffer["Total Amount"])} />
                     </span>
                     <span className={`codeshare-card__price ${hasGap ? 'codeshare-card__price--cheap' : 'codeshare-card__price--equal'}`}>
                         {cheapestOffer["Total Amount"].toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })}
@@ -34,7 +34,7 @@ function CodeShareCard({offers, getVerifiedCheck}){
                 <div className="codeshare-card__row">
                     <span className="codeshare-card__airline-group">
                         <span className="codeshare-card__airline">{mostExpensiveOffer["Owner Airline"]}</span>
-                        <VerifiedBadge check={getVerifiedCheck?.(mostExpensiveOffer["Owner Airline"])} />
+                        <VerifiedBadge check={getVerifiedCheck?.(mostExpensiveOffer["Owner Airline"], mostExpensiveOffer["Total Amount"])} />
                     </span>
                     <span className={`codeshare-card__price ${hasGap ? 'codeshare-card__price--expensive' : 'codeshare-card__price--equal'}`}>
                         {mostExpensiveOffer["Total Amount"].toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' })}

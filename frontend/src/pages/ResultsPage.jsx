@@ -156,8 +156,8 @@ function ResultsPage(){
     const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
     const gappedCodeshareGroups = codeshareGroups.filter((group) => hasRealGap(group));
     const zeroGapCodeshareGroups = codeshareGroups.filter((group) => !hasRealGap(group));
-    const getVerifiedCheck = (carrierName) =>
-        findBadgeCheck(verifiedChecks, { route: searchedRoute, flightDate: searchedDate, carrierName });
+    const getVerifiedCheck = (carrierName, displayedPrice) =>
+        findBadgeCheck(verifiedChecks, { route: searchedRoute, flightDate: searchedDate, carrierName, displayedPrice });
     const sortedGroups = [...gappedCodeshareGroups, ...zeroGapCodeshareGroups, ...regularGroups];
     if (sortedGroups.length === 0) return (
         <div>
