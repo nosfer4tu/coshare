@@ -61,6 +61,30 @@
       "real_source_url": "https://www.jetstar.com/jp/ja/home",
       "verdict": "match",
       "notes": "Matched by departure time; the site page shows times and prices, not flight numbers. 18:45 (GK307) in FlightLabs is the largest of three: JPY 8,215 vs site 7,890 (+4.1%). 15:40 (GK305): 9,300 vs 8,990 (+3.4%). 12:40 (GK301): 11,160 vs 10,990 (+1.5%). FlightLabs prices are whole USD converted at a fixed 155 JPY/USD. Site fares were 'displayed fare, seats left' and can change. FlightLabs data fetched on 2026-08-12 (request file last written 16:25 JST); original screenshots not retained."
+    },
+    {
+      "route": "KIX-TPE",
+      "check_date": "2026-10-05",
+      "flight_date": "2026-11-11",
+      "carrier_checked": "JAL",
+      "sandbox_source": "duffel",
+      "sandbox_price_jpy": 91682,
+      "real_price_jpy": 88630,
+      "real_source_url": "https://www.jal.co.jp",
+      "verdict": "match",
+      "notes": "Cheapest JAL fare shown by the app (Economy Special, JPY 91,682 on all three KIX-TPE flights that day) against JAL's own price of JPY 88,630 for the same flights (fare screen for JL5103 at 12:45 and JL5107 at 19:00; results-list from-price for JL5105 at 14:30). Site checked 2026-10-05 12:57-13:14 JST; app prices were cached at 12:49 JST. Whether the site price includes taxes and surcharges is not confirmed. Duffel prices changed between fetches that day (a later fetch had 19:00 JAL Special at 118,342)."
+    },
+    {
+      "route": "KIX-TPE",
+      "check_date": "2026-10-05",
+      "flight_date": "2026-11-11",
+      "carrier_checked": "China Airlines",
+      "sandbox_source": "duffel",
+      "sandbox_price_jpy": 62976,
+      "real_price_jpy": 58450,
+      "real_source_url": "https://www.china-airlines.com/jp/jp/",
+      "verdict": "mismatch",
+      "notes": "Compared at 12:45 (CI157), same fare class: app Economy Standard (V) JPY 62,976 against the site's Economy Standard (V) JPY 58,450. Other flights are not class-matched: the site's Standard (T) is JPY 55,750 at 14:30 and JPY 70,750 at 19:00, against app prices of JPY 62,976 and 77,702 (+13.0% and +9.8%). The site's Basic fare (JPY 40,750 at 12:45) does not appear in the app's data. Site checked 2026-10-05 12:56-13:06 JST; app prices were cached at 12:49 JST. Whether the site price includes taxes is not confirmed."
     }
   ]
 }
