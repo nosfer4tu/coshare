@@ -146,6 +146,21 @@ Small, reviewable diffs. Show the diff before explaining it.
   Badges are date-specific records ("{check_date}に公式サイトと照合"), not a claim about the
   current price. Checks are fetched once per results search in `ResultsPage.jsx`.
 
+## Destination catalog (hand-curated)
+- Data: `api/_lib/destination_catalog.json` (`{"destinations": [...]}`, a list, one entry per
+  `iata`). Loader/validator: `api/_lib/destination_catalog.py` (`load_catalog`, `validate_entry`,
+  `validate_catalog`; stdlib only). Tests: `tests/test_destination_catalog.py`.
+- Entry fields: `iata`, `city` / `country` (Japanese), `bestMonths` (1-12), `budgetLevel` (1-3,
+  1 low), `tags` (only: food, city, culture, nature, beach, shopping, nightlife, relax),
+  `highlights` (3-5 of title/note/sourceUrl), `hotelAreas` (2-3 of name/note/sourceUrl),
+  `mapQuery` (non-empty), optional `caution`, `lastChecked` (ISO date).
+- **The owner writes and maintains every real entry.** An agent must not invent entries or facts.
+  Every highlight and hotel area needs a source link (`https://`). The file holds one
+  `"example": true` placeholder, which the loader skips.
+- Planned source for the destination and trip pages, read through a future API endpoint (the
+  frontend must not import the file). **Nothing reads it yet.** It is separate from
+  `destination_cache` / `recommendation_service.py`, which are unchanged.
+
 ## Definition of Done — run before reporting success
 1. Both servers restart cleanly; no tracebacks on boot.
 2. Fresh-date search KIX→TPE renders CodeShareCards with real airline names —

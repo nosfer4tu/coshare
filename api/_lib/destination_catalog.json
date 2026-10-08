@@ -1,0 +1,39 @@
+{
+  "_schema": {
+    "_comment": "Hand-curated by the owner. Entries with \"example\": true are skipped by the loader. Validation lives in api/_lib/destination_catalog.py (validate_entry / validate_catalog). Do not add an entry without a real source link for every highlight and hotel area.",
+    "iata": "string, 3 uppercase letters, unique across the file",
+    "city": "string, Japanese city name",
+    "country": "string, Japanese country name",
+    "bestMonths": "non-empty list of integers 1-12",
+    "budgetLevel": "integer 1-3 (1 low, 3 high)",
+    "tags": "non-empty list, each one of: food, city, culture, nature, beach, shopping, nightlife, relax",
+    "highlights": "3 to 5 objects {title, note, sourceUrl}; sourceUrl must start with https://",
+    "hotelAreas": "2 to 3 objects {name, note, sourceUrl}; sourceUrl must start with https://",
+    "mapQuery": "non-empty string, the search text for a map link",
+    "caution": "optional non-empty string",
+    "lastChecked": "ISO date YYYY-MM-DD, the day the sources were last checked"
+  },
+  "destinations": [
+    {
+      "example": true,
+      "iata": "AAA",
+      "city": "サンプル市",
+      "country": "サンプル国",
+      "bestMonths": [1, 2],
+      "budgetLevel": 2,
+      "tags": ["city"],
+      "highlights": [
+        { "title": "サンプル見どころ1", "note": "PLACEHOLDER ONLY: 書式見本です。実データではありません。", "sourceUrl": "https://example.com/" },
+        { "title": "サンプル見どころ2", "note": "PLACEHOLDER ONLY", "sourceUrl": "https://example.com/" },
+        { "title": "サンプル見どころ3", "note": "PLACEHOLDER ONLY", "sourceUrl": "https://example.com/" }
+      ],
+      "hotelAreas": [
+        { "name": "サンプルエリア1", "note": "PLACEHOLDER ONLY", "sourceUrl": "https://example.com/" },
+        { "name": "サンプルエリア2", "note": "PLACEHOLDER ONLY", "sourceUrl": "https://example.com/" }
+      ],
+      "mapQuery": "サンプル市",
+      "caution": "PLACEHOLDER ONLY: 任意項目の例です。",
+      "lastChecked": "2000-01-01"
+    }
+  ]
+}
