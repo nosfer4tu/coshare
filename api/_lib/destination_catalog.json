@@ -102,6 +102,29 @@
       "mapQuery": "バンコク ホテル",
       "caution": "3〜5月は非常に暑く、4月は40℃近くになることもある。6〜10月の雨季は9月に雨が最も多く、洪水に注意。1〜2月は大気汚染(PM2.5)が増えることがある。",
       "lastChecked": "2026-10-11"
+    },
+    {
+      "iata": "SIN",
+      "city": "シンガポール",
+      "country": "シンガポール",
+      "bestMonths": [3, 4, 5],
+      "budgetLevel": 3,
+      "tags": ["city", "food", "shopping", "nature"],
+      "highlights": [
+        { "title": "マーライオン公園", "note": "マリーナベイ・サンズのすぐ近くにあり、高さ約8.6mのマーライオン像が立つ。", "sourceUrl": "https://www.trifa.co/ja/column/preparation-tips-travel/singapore-travel" },
+        { "title": "ガーデンズ・バイ・ザ・ベイ", "note": "マリーナベイ・サンズの背後に広がる巨大植物園。高さ25〜50mの人工樹木「スーパーツリー」が18本立ち並ぶ。", "sourceUrl": "https://www.trifa.co/ja/column/preparation-tips-travel/singapore-travel" },
+        { "title": "ナイトサファリ", "note": "夜に楽しむ世界でも珍しいサファリパーク。約40ヘクタールの敷地に130種類以上の夜行性動物が暮らす。", "sourceUrl": "https://nativecamp.net/blog/20251029_study_abroad_sin" },
+        { "title": "セントーサ島", "note": "市街地からすぐ行けるリゾートアイランド。ユニバーサル・スタジオ・シンガポールやシー・アクアリウムなどがある。", "sourceUrl": "https://www.smbctb.co.jp/globalcompass/travel/singapore-sightseeing/" },
+        { "title": "チャイナタウンとリトルインディア", "note": "民族ごとの街並みを歩ける、エスニックタウンとして知られるエリア。", "sourceUrl": "https://www.trifa.co/ja/column/preparation-tips-travel/singapore-travel" }
+      ],
+      "hotelAreas": [
+        { "name": "マリーナベイ", "note": "主要ランドマークが集まる観光の中心で、マーライオン公園まで徒歩約10分。ホテル料金は高め。", "sourceUrl": "https://jp.trip.com/guide/stay/recommended-hotel-areas-in-singapore.html" },
+        { "name": "オーチャード", "note": "百貨店や大型商業施設が大通り沿いに並ぶ、買い物向きのエリア。", "sourceUrl": "https://jp.trip.com/guide/stay/recommended-hotel-areas-in-singapore.html" },
+        { "name": "チャイナタウン", "note": "比較的リーズナブルなホテルが多く、駅も近くて移動しやすいバランス型のエリア。", "sourceUrl": "https://hizuho-blog.com/hotel-singapore/" }
+      ],
+      "mapQuery": "シンガポール ホテル",
+      "caution": "年間を通して高温多湿。11〜2月は雨季で、短時間の激しいスコールが多い。",
+      "lastChecked": "2026-10-11"
     }
   ]
 }
