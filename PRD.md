@@ -221,10 +221,12 @@ research task. Evidence of the FlightLabs investigation: `scripts/flightlabs_rep
 
 ### M5 — Multi-source plan
 - 5.1 FlightLabs `flightNumber` handling. Before any wiring, document the three
-      route-dependent failure modes (TODO(Gabriel) list them) and define the rule the app
+      situations the repo shows (an OTA name in the carrier field with a null `flightNumber`;
+      comma-joined carrier names; placeholder numbers such as "1"; how to interpret them is
+      unconfirmed) and define the rule the app
       follows when `flightNumber` is null or untrustworthy (e.g. never show a flight number
       from FlightLabs; match to Duffel offers only on carrier + departure time). Files:
-      docs/data-verification.md. Done when: each failure mode has a documented example route and
+      docs/data-verification.md. Done when: each situation has a documented example and
       handling rule.
 - 5.2 Decide FlightLabs's role: wired secondary price source vs offline verification aid
       for `verified_checks`. Decision TODO(Gabriel). If wired: new service module (key
