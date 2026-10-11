@@ -32,3 +32,16 @@ export function connectionLabel(offer) {
     const count = offer["Segment Count"];
     return count > 1 ? `乗り継ぎ${count - 1}回` : null;
 }
+
+// The airline text for a connecting offer: the display carrier (first leg) by name only.
+// "Operating Carrier" / "Marketing Carrier" are last-leg keys on a connection, so no operator
+// clause is built from them. Null when the offer is not a connection.
+export function connectionAirline(offer) {
+    return connectionLabel(offer) ? offer["Owner Airline"] : null;
+}
+
+// The コードシェア便 badge reads "is Marketing Codeshare", a last-leg key, so it is only
+// meaningful for direct offers (and older cache rows without "Segment Count").
+export function showCodeshareBadge(offer) {
+    return !connectionLabel(offer) && Boolean(offer["is Marketing Codeshare"]);
+}

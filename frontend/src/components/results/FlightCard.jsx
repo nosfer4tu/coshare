@@ -1,6 +1,6 @@
 import "./FlightCard.css"
 import FlightDetails, { DetailRow } from "./FlightDetails";
-import { hasDetails, formatFlightNumber, formatPoint, displayDeparture, connectionLabel } from "../../utils/flightDetails";
+import { hasDetails, formatFlightNumber, formatPoint, displayDeparture, connectionLabel, connectionAirline, showCodeshareBadge } from "../../utils/flightDetails";
 import VerifiedBadge from "./VerifiedBadge";
 function FlightCard({offer, getVerifiedCheck}){
     const connection = connectionLabel(offer);
@@ -9,7 +9,7 @@ function FlightCard({offer, getVerifiedCheck}){
             <div className="flight-card__summary">
                 <div className="flight-card__airline">
                     {connection ?
-                        <p>乗り継ぎ便</p>
+                        <p>{connectionAirline(offer)} <span className="flight-card__connection">{connection}</span></p>
                         : offer["Owner Airline IATA"] !== offer["Operating IATA"] ?
                         <p>{offer["Owner Airline"]} が発券 / {offer["Operating Carrier"]} が運航</p>
                         : offer["Operating Carrier"] !== offer["Marketing Carrier"] ?
@@ -25,8 +25,7 @@ function FlightCard({offer, getVerifiedCheck}){
                 <p className="flight-card__price">
                     {offer["Total Amount"].toLocaleString('ja-JP', {style: 'currency', currency: 'JPY'})}
                 </p>
-                {connection && <span className="flight-card__connection">{connection}</span>}
-                {offer["is Marketing Codeshare"] &&
+                {showCodeshareBadge(offer) &&
                     <span className="flight-card__codeshare-badge">コードシェア便</span>
                 }
             </div>
