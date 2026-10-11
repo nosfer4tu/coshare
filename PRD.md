@@ -36,7 +36,7 @@ Multi-source, not one live API. Each source has a defined role and a defined lim
 |---|---|---|
 | Duffel, test mode | Primary: real codeshare relationships | Prices are synthetic. Never present them as market data. |
 | FlightLabs (Starter plan) | Secondary price source | No owner/issuer field; inconsistent LCC coverage; `flightNumber` unreliable in three route-dependent failure modes (TODO(Gabriel): list them; the repo only shows null `flightNumber` and OTA names in carrier fields, see `scripts/flightlabs_report.md`). **Not wired into the backend yet**: only exploration scripts in `scripts/`. |
-| ODPT | Cross-check for pairing | Free JAL/ANA schedule and codeshare data; no prices. Registration status: TODO(Gabriel). |
+| ODPT | Cross-check for pairing | Free JAL/ANA schedule data; no prices. Registered; account approval pending (as of 2026-10-09). Whether it carries codeshare data is unverified. |
 | `verified_checks` | Trust badges | Manually verified route/carrier price checks. In progress: schema file exists (`database/schemas/seed_verified_checks.sql`), no code uses it yet. |
 | Norba (NDC aggregator) | Optional upgrade | JAL/ANA/LATAM support expected, unconfirmed. Not a dependency. |
 
@@ -339,7 +339,7 @@ They are kept there only, so there is one copy to keep current.
 
 **Human-only tasks (not for the model, tracked here for completeness)**
 - Exact final-assessment date and any milestone dates: TODO(Gabriel).
-- ODPT registration (status TODO(Gabriel)); Norba status check (optional).
+- ODPT account approval (registered; approval pending as of 2026-10-09); Norba status check (optional).
 - Run manual route/carrier price checks and record them for `verified_checks`; confirm the
   table exists in Neon and run any DDL/cleanup SQL the model outputs.
 - Click-verification of all booking/deep-link URLs.
