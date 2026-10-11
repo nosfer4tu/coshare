@@ -10,7 +10,7 @@ import SkeletonLoader from "../components/common/SkeletonLoader";
 import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
 import SearchBar from "../components/search/SearchBar";
 import SearchModeSelector from "../components/search/SearchModeSelector";
-import { hasRealGap } from "../utils/codeshareGap";
+import { groupOffers } from "../utils/groupOffers";
 import { findBadgeCheck } from "../utils/verifiedChecks";
 function ResultsPage(){
     const location = useLocation();
@@ -146,19 +146,9 @@ function ResultsPage(){
             <ErrorMessage message={error} />
         </div>
     );
-    const grouped = results.reduce((groups, offer) => {
-        const key = `${offer["Departure Time"]}_${offer["Operating IATA"]}`;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(offer);
-        return groups;
-    }, {});
-    const codeshareGroups = Object.values(grouped).filter((group) => group.length > 1);
-    const regularGroups = Object.values((grouped)).filter((group) => group.length === 1);
-    const gappedCodeshareGroups = codeshareGroups.filter((group) => hasRealGap(group));
-    const zeroGapCodeshareGroups = codeshareGroups.filter((group) => !hasRealGap(group));
+    const sortedGroups = groupOffers(results, searchMode);
     const getVerifiedCheck = (carrierName, displayedPrice) =>
         findBadgeCheck(verifiedChecks, { route: searchedRoute, flightDate: searchedDate, carrierName, displayedPrice });
-    const sortedGroups = [...gappedCodeshareGroups, ...zeroGapCodeshareGroups, ...regularGroups];
     if (sortedGroups.length === 0) return (
         <div>
             <Navbar />
@@ -197,12 +187,11 @@ function ResultsPage(){
             <p className="results-page__section-label">コードシェア便の価格差</p>
             <PriceGapExplainer />
             <div className="results-page__list">
-                {sortedGroups.map((group) => {
-                    if (searchMode === "codeshare" && group.length === 1 && !group[0]["is Codeshare"]) return null;
-                    return group.length > 1
+                {sortedGroups.map((group) => (
+                    group.length > 1
                         ? <CodeShareCard key={group[0]["Offer ID"]} offers={group} getVerifiedCheck={getVerifiedCheck} />
                         : <FlightCard key={group[0]["Offer ID"]} offer={group[0]} getVerifiedCheck={getVerifiedCheck} />
-                })}
+                ))}
             </div>
         </div>
 

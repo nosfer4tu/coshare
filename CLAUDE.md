@@ -8,7 +8,7 @@ Product context: @PRODUCT.md / Design system: @DESIGN.md
 ## Priorities (target: January 2027 final assessment)
 The 2026-07-30 mid-term demo has passed. Still off-limits WITHOUT an explicit request:
 - renaming normalized offer keys (see Data Contracts)
-- changing the codeshare pairing logic (grouping by `Departure Time` + `Operating IATA`, see Architecture)
+- changing the codeshare pairing logic (`groupOffers`: nonstop grouping by `Departure Time` + `Operating IATA`, see Architecture)
 - removing the ZZ / HR exclusions
 - DB DELETE/DDL (see Guardrails)
 Small, reviewable diffs. Show the diff before explaining it.
@@ -48,9 +48,14 @@ Small, reviewable diffs. Show the diff before explaining it.
   and drops `Owner Airline IATA` in `{"HR"}`. Called only by `/api/codeshare/detect`
   (ResultsPage mode `codeshare`); in `/api/flights/search` (mode `both`) the call is commented
   out, so that route does no server-side HR filtering.
-- **Pairing runs in the frontend**: `frontend/src/pages/ResultsPage.jsx` groups offers by
-  `` `${Departure Time}_${Operating IATA}` ``; groups with >1 offer are codeshare groups
-  (gap logic in `frontend/src/utils/codeshareGap.js`).
+- **Pairing runs in the frontend**: `groupOffers(offers, mode)` in
+  `frontend/src/utils/groupOffers.js` (pure; tests in `groupOffers.test.mjs`), called from
+  `ResultsPage.jsx`. Nonstop offers are grouped by `` `${Departure Time}_${Operating IATA}` ``;
+  groups with >1 offer are codeshare groups (gap logic in `frontend/src/utils/codeshareGap.js`).
+  An offer with `'Segment Count' > 1` never joins a group (its key describes only the last leg);
+  offers with `'Segment Count'` 1 or absent (older cache rows) group as before. Codeshare mode
+  drops connecting offers (and single nonstop offers whose `is Codeshare` is false); 両方 mode
+  renders each connecting offer as its own FlightCard, after the nonstop groups.
 - `api/_lib/db.py` Neon PostgreSQL: `search_cache`, `price_history`.
 - `seed_trend_data.py` (repo root) populates price history for demo routes (GET loop via :8000).
 
@@ -85,7 +90,8 @@ Small, reviewable diffs. Show the diff before explaining it.
     `'Segment Count' > 1` the cards show 「乗り継ぎ{n-1}回」 and 「乗り継ぎ便」 instead of the
     last leg's operator.
   - So on a connection the display carrier (first leg) and the pairing key
-    (`Departure Time` + `Operating IATA`, last leg) describe different legs.
+    (`Departure Time` + `Operating IATA`, last leg) describe different legs; for that reason
+    connecting offers are excluded from pairing (see Architecture).
 - **Display carrier = `slices[0].segments[0].marketing_carrier`** (name + iata_code),
   flight number from `marketing_carrier_flight_number`. Duffel's `offer.owner` is the
   *ticketing* entity, not the seller — never use it for display. Fallback to owner only
@@ -206,9 +212,15 @@ Small, reviewable diffs. Show the diff before explaining it.
 - **`is Codeshare` is unchanged on purpose.** Its `offer.owner` clause makes it `True` for
   HR-ticketed own-code offers (e.g. owner `HR`, marketing = operating = `7C`). That is what
   keeps HR-ticketed own-code offers such as `CI` and `KE` in the codeshare pairs
-  (`get_codeshare_offers`; checked in the analysis). `ResultsPage.jsx` also reads it
-  (singleton groups are dropped in codeshare mode unless it is true). Do not change the rule
+  (`get_codeshare_offers`; checked in the analysis). `groupOffers` also reads it
+  (single nonstop offers are dropped in codeshare mode unless it is true). Do not change the rule
   without checking `/api/codeshare/detect` first.
+- **Connecting itineraries are never paired.** Codeshare price gaps are detected for nonstop
+  offers only (`'Segment Count'` 1 or absent); codeshare mode hides connecting offers entirely
+  and 両方 mode lists them as single FlightCards. Offers cached before `'Segment Count'` existed
+  still group by the old last-leg key, so a connection cached that way can still be paired
+  falsely until its `search_cache` row expires (24h). A proper itinerary key (all legs) would
+  be needed to pair connections; not done.
 - **The コードシェア便 badge reads `'is Marketing Codeshare'`**, not `'is Codeshare'`, so solo
   flights ticketed through an intermediary no longer get a false badge. Rows cached before the
   key existed show no badge.
