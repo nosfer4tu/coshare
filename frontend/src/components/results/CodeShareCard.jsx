@@ -3,11 +3,12 @@ import airlineBookingUrls from '../../constants/airlineBookingUrls';
 import { getPriceExtremes } from '../../utils/codeshareGap';
 import FlightDetails, { DetailRow } from './FlightDetails';
 import VerifiedBadge from './VerifiedBadge';
-import { hasDetails, formatFlightNumber, formatPoint } from '../../utils/flightDetails';
+import { hasDetails, formatFlightNumber, formatPoint, displayDeparture, connectionLabel } from '../../utils/flightDetails';
 
 function CodeShareCard({offers, getVerifiedCheck}){
     const { cheapestOffer, mostExpensiveOffer, priceGap } = getPriceExtremes(offers);
     const hasGap = priceGap > 0;
+    const connection = connectionLabel(cheapestOffer);
     if (cheapestOffer["Owner Airline"] === mostExpensiveOffer["Owner Airline"]) return null;
 
     const cheapestUrl = airlineBookingUrls[cheapestOffer["Owner Airline IATA"]];
@@ -18,7 +19,8 @@ function CodeShareCard({offers, getVerifiedCheck}){
             <div className="codeshare-card__header">
                 <span className="codeshare-card__title">同一便・コードシェア価格比較</span>
                 <span className="codeshare-card__flight-info">
-                    {cheapestOffer["Operating Carrier"]} 運航 • {new Date(cheapestOffer["Departure Time"]).toLocaleString('ja-JP')}
+                    {connection ? '乗り継ぎ便' : `${cheapestOffer["Operating Carrier"]} 運航`} • {new Date(displayDeparture(cheapestOffer)).toLocaleString('ja-JP')}
+                    {connection && <span className="codeshare-card__connection">{connection}</span>}
                 </span>
             </div>
             <div className="codeshare-card__comparison">
@@ -96,7 +98,7 @@ function CodeShareCard({offers, getVerifiedCheck}){
             )}
             {hasDetails(cheapestOffer) && hasDetails(mostExpensiveOffer) && (
                 <FlightDetails>
-                    <DetailRow label="出発" value={formatPoint(cheapestOffer["Departure Airport"], cheapestOffer["Departure Time"])} />
+                    <DetailRow label="出発" value={formatPoint(cheapestOffer["Departure Airport"], displayDeparture(cheapestOffer))} />
                     <DetailRow label="到着" value={formatPoint(cheapestOffer["Arrival Airport"], cheapestOffer["Arrival Time"])} />
                     <DetailRow
                         label="運航便名"

@@ -92,5 +92,39 @@ class NormalizerCodeshareFlagTest(unittest.TestCase):
         )
 
 
+# Sanitized connection: first leg departs 10:40, last leg departs 22:00.
+CONNECTION_FIXTURE = {"data": {"offers": [
+    {"id": "off_conn", "total_amount": "200.00", "total_currency": "USD", "owner": BR,
+     "slices": [{"segments": [
+         _segment(BR, BR, "201", origin="KIX", destination="TPE",
+                  departing="2026-12-02T10:40:00", arriving="2026-12-02T13:00:00"),
+         _segment(BR, BR, "202", origin="TPE", destination="BKK",
+                  departing="2026-12-02T22:00:00", arriving="2026-12-03T00:50:00"),
+     ]}]},
+    {"id": "off_direct", "total_amount": "150.00", "total_currency": "USD", "owner": BR,
+     "slices": [{"segments": [_segment(BR, BR, "203", origin="KIX", destination="BKK",
+                                       departing="2026-12-02T10:40:00",
+                                       arriving="2026-12-02T15:00:00")]}]},
+]}}
+
+
+class NormalizerFirstDepartureTest(unittest.TestCase):
+    def setUp(self):
+        self.by_id = {o["Offer ID"]: o for o in normalize_offers(CONNECTION_FIXTURE)}
+
+    def test_connection_first_departure_is_first_leg(self):
+        offer = self.by_id["off_conn"]
+        self.assertEqual(offer["First Departure Time"], "2026-12-02T10:40:00")
+        # Unchanged: grouping/pairing still reads the last leg.
+        self.assertEqual(offer["Departure Time"], "2026-12-02T22:00:00")
+        self.assertEqual(offer["Segment Count"], 2)
+
+    def test_direct_first_departure_equals_departure(self):
+        offer = self.by_id["off_direct"]
+        self.assertEqual(offer["First Departure Time"], "2026-12-02T10:40:00")
+        self.assertEqual(offer["Departure Time"], offer["First Departure Time"])
+        self.assertEqual(offer["Segment Count"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

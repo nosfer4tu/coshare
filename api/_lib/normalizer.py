@@ -25,6 +25,8 @@ def normalize_offers(raw_response):
         offer_dict["Operating Flight Number"] = first_segment[0].get("operating_carrier_flight_number")
         offer_dict["Departure Airport"] = (first_segment[0].get("origin") or {}).get("iata_code")
         offer_dict["Arrival Airport"] = (first_segment[0].get("destination") or {}).get("iata_code")
+        # Display-only departure: the loop below leaves 'Departure Time' on the LAST segment.
+        offer_dict["First Departure Time"] = first_segment[0].get("departing_at")
         offer_dict["Segment Count"] = len((offers.get("slices") or [{}])[0].get("segments") or [])
         for flight_slice in offers.get("slices",[]):
             for segment in flight_slice.get("segments", []):

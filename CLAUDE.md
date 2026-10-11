@@ -72,11 +72,18 @@ Small, reviewable diffs. Show the diff before explaining it.
     `'is Marketing Codeshare'` (Marketing IATA != Operating IATA only; `offer.owner` is ignored;
     absent on `search_cache` rows written before it existed).
   - *First segment* (`slices[0].segments[0]`, set before the loop): `'Owner Airline'`,
-    `'Owner Airline IATA'`, and the additive detail keys `'Marketing Flight Number'`,
-    `'Operating Flight Number'` (may be null), `'Departure Airport'`, `'Arrival Airport'`,
+    `'Owner Airline IATA'`, `'First Departure Time'` (the departure to DISPLAY; absent on
+    `search_cache` rows written before it existed, so the UI reads it via `displayDeparture` in
+    `frontend/src/utils/flightDetails.js`, which falls back to `'Departure Time'`), and the
+    additive detail keys `'Marketing Flight Number'`, `'Operating Flight Number'` (may be null),
+    `'Departure Airport'`, `'Arrival Airport'`,
     `'Segment Count'` (segments in slice 0). Detail keys are absent on `search_cache` rows
     written before they existed — the UI omits absent fields and only offers expandable
     details when `Segment Count === 1`.
+  - `'Departure Time'` stays the LAST leg: grouping/pairing and verified-checks code keep using
+    it, but it must NOT be used to display a departure (use `displayDeparture`). For
+    `'Segment Count' > 1` the cards show 「乗り継ぎ{n-1}回」 and 「乗り継ぎ便」 instead of the
+    last leg's operator.
   - So on a connection the display carrier (first leg) and the pairing key
     (`Departure Time` + `Operating IATA`, last leg) describe different legs.
 - **Display carrier = `slices[0].segments[0].marketing_carrier`** (name + iata_code),

@@ -18,3 +18,17 @@ export function formatPoint(airport, isoTime) {
     const time = isoTime ? new Date(isoTime).toLocaleString('ja-JP') : null;
     return [airport, time].filter(Boolean).join(' ') || null;
 }
+
+// The departure to SHOW. "Departure Time" holds the last leg's departure on a connection, so
+// it is only the fallback (older search_cache rows have no "First Departure Time"). Never use
+// this for grouping/pairing or verified-check matching; those keep "Departure Time".
+export function displayDeparture(offer) {
+    return offer["First Departure Time"] ?? offer["Departure Time"];
+}
+
+// "乗り継ぎ1回" for a 2-segment offer; null for direct offers and for older cache rows
+// without "Segment Count". When set, the last leg's operator does not describe the trip.
+export function connectionLabel(offer) {
+    const count = offer["Segment Count"];
+    return count > 1 ? `乗り継ぎ${count - 1}回` : null;
+}
