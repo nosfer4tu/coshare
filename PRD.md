@@ -36,14 +36,16 @@ Multi-source, not one live API. Each source has a defined role and a defined lim
 |---|---|---|
 | Duffel, test mode | Primary: real codeshare relationships | Prices are synthetic. Never present them as market data. |
 | FlightLabs (Starter plan) | Secondary price source | No owner/issuer field; inconsistent LCC coverage; `flightNumber` unreliable. The repo shows three situations: an OTA name in the carrier field with a null `flightNumber`; comma-joined carrier names; placeholder numbers such as "1" (`scripts/flightlabs_report.md`, `scripts/flightlabs_international_candidates.md`). How to interpret them is unconfirmed. **Not wired into the backend yet**: only exploration scripts in `scripts/`. |
-| ODPT | Cross-check for pairing | Free JAL/ANA schedule data; no prices. Registered; account approval pending (as of 2026-10-09). Whether it carries codeshare data is unverified. |
 | `verified_checks` | Trust badges | Manually verified route/carrier price checks. In progress: schema file exists (`database/schemas/seed_verified_checks.sql`), no code uses it yet. |
 | Norba (NDC aggregator) | Optional upgrade | JAL/ANA/LATAM support expected, unconfirmed. Not a dependency. |
 
 **Ruled out** (outcome only): Skyscanner, Amadeus Self-Service, Google Flights (no official
 API; scrapers out of scope), Travelpayouts, TripStack, NUUA, SerpApi, Airlabs, LetsFG,
 NAVITIME. Verteil: IATA-accredited agencies only. Mystifly: terms incompatible with the
-project. Duffel live mode: unavailable (see above). TODO(Gabriel): one-line reasons for
+project. Duffel live mode: unavailable (see above). ODPT: Tested 2026-10-11
+(docs/odpt-notes.md): JAL and ANA live departure boards only; no codeshare field, prices or
+future dates; not suitable for detecting codeshare pairs. Kept as a documented dead end.
+TODO(Gabriel): one-line reasons for
 the others if the final report needs them.
 
 ---
@@ -66,9 +68,6 @@ A model can verify each item mechanically:
 - [ ] Verified badges: a route/carrier with a `verified_checks` row shows a badge with the
       check date, linking to the verification page; a route/carrier without a row shows none.
       At least TODO(Gabriel) checks are recorded.
-- [ ] ODPT cross-check (if registration succeeds): a script compares ODPT JAL/ANA codeshare
-      data with the app's pairs for chosen routes and prints agreements and mismatches.
-      If registration does not happen, this item is marked "not pursued" with the reason.
 - [ ] Round trip: a search with 復路 date returns itineraries with 2 slices; UI renders
       outbound and return; codeshare comparison works per slice.
 - [ ] Flight-number lookup (scope per M7 flag): entering e.g. "NH849" + date returns that
@@ -96,7 +95,7 @@ Dates: TODO(Gabriel) for every milestone. Order is a default; Gabriel may reorde
 - **M2 — Data-source decision — COMPLETED, outcome recorded** (Data strategy above).
 - **M3 — Known-issue fixes** (from CLAUDE.md "Known issues").
 - **M4 — Disclosure + verified badges.**
-- **M5 — Multi-source plan** (FlightLabs handling, ODPT cross-check, optional Norba).
+- **M5 — Multi-source plan** (FlightLabs handling, optional Norba).
 - **M6 — Round-trip search.**
 - **M7 — Flight-number lookup.** Flagged: dependency changed.
 - **M8 — FX + deep-link improvements.**
@@ -239,11 +238,6 @@ research task. Evidence of the FlightLabs investigation: `scripts/flightlabs_rep
       or a separate adapter, local_server.py, tests/. Done when: fixture with an
       overlapping flight yields one row, source labelled; if not wired: the decision is
       recorded in docs/data-verification.md.
-- 5.3 ODPT cross-check. Prerequisite: registration (registered; approval pending as of 2026-10-09). Script that
-      loads ODPT JAL/ANA schedule data (codeshare fields unverified) for chosen routes and compares it with
-      the app's pairs; no prices. Files: scripts/odpt_crosscheck.py, docs/data-verification.md.
-      Done when: SUCCESS ODPT item passes, or is recorded as "not pursued" with a reason.
-      Does not change the pairing logic.
 - 5.4 Norba (optional, not a dependency). Revisit only if JAL/ANA/LATAM access is available
       (expected around October 2026; TODO(Gabriel) status). Done when: a go/no-go line is
       written in docs/data-verification.md. No other task may depend on this.
@@ -269,8 +263,8 @@ out of scope.
 ### M7 — Flight-number lookup (FLAG: dependency changed)
 The original design resolved a flight number to a route via a second flight API's schedule
 data. FlightLabs `flightNumber` is unreliable, so it cannot be that source. Options:
-Duffel offers (flight numbers present per segment) for a user-supplied route, or ODPT
-schedule data for JAL/ANA flights (depends on 5.3). TODO(Gabriel): choose scope before
+Duffel offers (flight numbers present per segment) for a user-supplied route.
+TODO(Gabriel): choose scope before
 starting.
 - 7.1 Backend: `GET /api/flights/lookup?flightNumber=NH849&date=YYYY-MM-DD` using the chosen
       source; unknown flight → clean 404 JSON. Files: local_server.py, new service function,
@@ -341,7 +335,7 @@ They are kept there only, so there is one copy to keep current.
 
 **Human-only tasks (not for the model, tracked here for completeness)**
 - Exact final-assessment date and any milestone dates: TODO(Gabriel).
-- ODPT account approval (registered; approval pending as of 2026-10-09); Norba status check (optional).
+- Norba status check (optional).
 - Run manual route/carrier price checks and record them for `verified_checks`; confirm the
   table exists in Neon and run any DDL/cleanup SQL the model outputs.
 - Click-verification of all booking/deep-link URLs.
