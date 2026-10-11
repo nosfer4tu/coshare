@@ -34,6 +34,74 @@
       "mapQuery": "サンプル市",
       "caution": "PLACEHOLDER ONLY: 任意項目の例です。",
       "lastChecked": "2000-01-01"
+    },
+    {
+      "iata": "TPE",
+      "city": "台北",
+      "country": "台湾",
+      "bestMonths": [3, 4, 10, 11],
+      "budgetLevel": 2,
+      "tags": ["food", "city", "culture", "shopping"],
+      "highlights": [
+        { "title": "台北101", "note": "高さ約508m・101階建てのランドマーク。89階の展望台から市内を見渡せ、低層階は商業施設になっている。", "sourceUrl": "https://www.hankyu-travel.com/guide/taiwan/" },
+        { "title": "國立故宮博物院", "note": "中国歴代皇帝の宝物や芸術品を収蔵する博物館。「翠玉白菜」や「肉形石」が有名で、館内は広大で展示品も多い。", "sourceUrl": "https://www.arukikata.co.jp/webmagazine/272269/" },
+        { "title": "士林夜市", "note": "初めての台北なら最初に行く夜市として勧められ、屋台のB級グルメを食べ歩ける。", "sourceUrl": "https://travel.buyma.com/contents/magazine/taipei-sightseeing/" },
+        { "title": "龍山寺", "note": "清の時代に建てられた寺院。基本は仏教寺院で、道教や儒教の影響も受けている。", "sourceUrl": "https://jp.trip.com/hot/articles/%E5%8F%B0%E5%8C%97+%E8%A6%B3%E5%85%89.html" },
+        { "title": "九份(日帰り)", "note": "かつて金鉱山で栄えた町で、台北から日帰りで行ける。夜は赤い提灯が灯る。", "sourceUrl": "https://www.arukikata.co.jp/webmagazine/272269/" }
+      ],
+      "hotelAreas": [
+        { "name": "中山エリア", "note": "日系ホテルや日本語対応の店が多く、初めての台北で選びやすい定番エリア。", "sourceUrl": "https://asiatravel-blog.com/taipei_hotel_area/" },
+        { "name": "台北駅周辺", "note": "新幹線・バス・空港MRTの起点で移動に便利。九份や台中への日帰りに向く。駅が広く、街の情緒は少なめ。", "sourceUrl": "https://discovery-taiwan.com/taipei-hotel-area-guide/" },
+        { "name": "西門町", "note": "リーズナブルなホテルが多く、夜まで遊びたい若い旅行者向け。", "sourceUrl": "https://asiatravel-blog.com/taipei_hotel_area/" }
+      ],
+      "mapQuery": "台北 ホテル",
+      "caution": "7〜9月は台風に注意(9月は特に)。九份など北東部は秋も雨が多い。",
+      "lastChecked": "2026-10-09"
+    },
+    {
+      "iata": "ICN",
+      "city": "ソウル",
+      "country": "韓国",
+      "bestMonths": [4, 5, 10, 11],
+      "budgetLevel": 2,
+      "tags": ["food", "city", "culture", "shopping"],
+      "highlights": [
+        { "title": "景福宮", "note": "朝鮮王朝の中心として栄えた、ソウル最大の古宮。", "sourceUrl": "https://www.veltra.com/jp/guide/international/spot-international/20567/" },
+        { "title": "北村韓屋村", "note": "伝統的な韓屋が立ち並ぶ歴史ある街並み。景福宮や昌徳宮も徒歩圏内にある。", "sourceUrl": "https://www.kkday.com/ja/blog/35455/asia-korea-sightseeing" },
+        { "title": "明洞", "note": "コスメやファッション、グルメなど幅広い店が集まる人気のショッピングエリア。", "sourceUrl": "https://www.kkday.com/ja/blog/35455/asia-korea-sightseeing" },
+        { "title": "弘大", "note": "ファッションや雑貨、若者文化が楽しめる街。美術大学があり、若者が集まるサブカルチャーの街として知られる。", "sourceUrl": "https://www.kkday.com/ja/blog/35455/asia-korea-sightseeing" },
+        { "title": "Nソウルタワー", "note": "南山にある展望タワー。ソウル市内を一望でき、夜景が特におすすめ。ケーブルカーでも行ける。", "sourceUrl": "https://www.veltra.com/jp/guide/international/spot-international/20567/" }
+      ],
+      "hotelAreas": [
+        { "name": "明洞", "note": "初めてのソウルで選びやすい定番エリア。コスメ・買い物・グルメに便利。", "sourceUrl": "https://pacifichotel.jp/column/seoul-best-areas-to-stay/" },
+        { "name": "弘大", "note": "カフェ・ファッション・若者文化の街で、仁川空港からの移動もしやすい。", "sourceUrl": "https://pacifichotel.jp/column/seoul-best-areas-to-stay/" },
+        { "name": "仁寺洞・鍾路", "note": "景福宮や昌徳宮、北村などへ徒歩で行きやすく、王宮や伝統文化を歩いて回りたい人向け。", "sourceUrl": "https://creatrip.com/ja/blog/15068/%E9%A6%96%E7%88%BE%E4%BD%8F%E5%AE%BF%E6%8C%87%E5%8D%97%EF%BC%9A%E5%A4%96%E5%9C%8B%E6%97%85%E5%AE%A2%E7%9A%84%E6%9C%80%E4%BD%B3%E5%9C%B0%E5%8D%80%E8%88%87%E9%A3%AF%E5%BA%97%E6%8E%A8%E8%96%A6" }
+      ],
+      "mapQuery": "ソウル ホテル",
+      "caution": "夏は梅雨(6月中旬から)と猛暑、冬は厳しい寒さ。3月は黄砂が多く、旧正月や秋夕は休業する店が多い。",
+      "lastChecked": "2026-10-09"
+    },
+    {
+      "iata": "BKK",
+      "city": "バンコク",
+      "country": "タイ",
+      "bestMonths": [11, 12, 1, 2],
+      "budgetLevel": 1,
+      "tags": ["culture", "shopping", "food", "nightlife"],
+      "highlights": [
+        { "title": "王宮", "note": "ビクトリア様式とタイ様式が融合した宮殿などの見どころがある。エメラルド寺院(ワット・プラケオ)は同じ敷地内にある。", "sourceUrl": "https://www.arukikata.co.jp/webmagazine/271701/" },
+        { "title": "ワット・ポー", "note": "1788年にラーマ1世が建立した寺院。黄金に輝く全長46mの寝仏で知られる。", "sourceUrl": "https://www.arukikata.co.jp/webmagazine/271701/" },
+        { "title": "ワット・アルン", "note": "昼は白い塔が青空に映え、夜はライトアップされる寺院。三島由紀夫の小説『暁の寺』に描かれた。", "sourceUrl": "https://www.arukikata.co.jp/webmagazine/271701/" },
+        { "title": "チャトゥチャック・ウィークエンドマーケット", "note": "世界最大級の屋外マーケットで、出店は1万5千以上とされる。午前中が比較的涼しい。", "sourceUrl": "https://www.trifa.co/ja/column/preparation-tips-travel/bangkok-travel" }
+      ],
+      "hotelAreas": [
+        { "name": "スクンビット", "note": "日本人居住者が多く、日本食レストランや日系スーパーが揃う。初めてのバンコクで選びやすい。", "sourceUrl": "https://tripfolio.jp/article/bangkok-hotel-selection-guide" },
+        { "name": "サイアム・チットロム", "note": "サイアムパラゴンやセントラルワールドなど大型ショッピングモールが集まり、買い物向き。", "sourceUrl": "https://travel.buyma.com/contents/magazine/thailand-bangkok-hotel-recommend/" },
+        { "name": "シーロム・サトーン", "note": "BTSとMRTの両方が使えて移動しやすい。ビジネス街だが夕方には屋台が並び、ルンピニー公園も近い。", "sourceUrl": "https://jp.trip.com/guide/stay/recommended-hotel-areas-in-bangkok.html" }
+      ],
+      "mapQuery": "バンコク ホテル",
+      "caution": "3〜5月は非常に暑く、4月は40℃近くになることもある。6〜10月の雨季は9月に雨が最も多く、洪水に注意。1〜2月は大気汚染(PM2.5)が増えることがある。",
+      "lastChecked": "2026-10-11"
     }
   ]
 }
