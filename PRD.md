@@ -35,7 +35,7 @@ Multi-source, not one live API. Each source has a defined role and a defined lim
 | Source | Role | Limits |
 |---|---|---|
 | Duffel, test mode | Primary: real codeshare relationships | Prices are synthetic. Never present them as market data. |
-| FlightLabs (Starter plan) | Secondary price source | No owner/issuer field; inconsistent LCC coverage; `flightNumber` unreliable in three route-dependent failure modes (TODO(Gabriel): list them; the repo only shows null `flightNumber` and OTA names in carrier fields, see `scripts/flightlabs_report.md`). **Not wired into the backend yet**: only exploration scripts in `scripts/`. |
+| FlightLabs (Starter plan) | Secondary price source | No owner/issuer field; inconsistent LCC coverage; `flightNumber` unreliable. The repo shows three situations: an OTA name in the carrier field with a null `flightNumber`; comma-joined carrier names; placeholder numbers such as "1" (`scripts/flightlabs_report.md`, `scripts/flightlabs_international_candidates.md`). How to interpret them is unconfirmed. **Not wired into the backend yet**: only exploration scripts in `scripts/`. |
 | ODPT | Cross-check for pairing | Free JAL/ANA schedule data; no prices. Registered; account approval pending (as of 2026-10-09). Whether it carries codeshare data is unverified. |
 | `verified_checks` | Trust badges | Manually verified route/carrier price checks. In progress: schema file exists (`database/schemas/seed_verified_checks.sql`), no code uses it yet. |
 | Norba (NDC aggregator) | Optional upgrade | JAL/ANA/LATAM support expected, unconfirmed. Not a dependency. |
@@ -237,8 +237,8 @@ research task. Evidence of the FlightLabs investigation: `scripts/flightlabs_rep
       or a separate adapter, local_server.py, tests/. Done when: fixture with an
       overlapping flight yields one row, source labelled; if not wired: the decision is
       recorded in docs/data-verification.md.
-- 5.3 ODPT cross-check. Prerequisite: registration (status TODO(Gabriel)). Script that
-      loads ODPT JAL/ANA schedule/codeshare data for chosen routes and compares it with
+- 5.3 ODPT cross-check. Prerequisite: registration (registered; approval pending as of 2026-10-09). Script that
+      loads ODPT JAL/ANA schedule data (codeshare fields unverified) for chosen routes and compares it with
       the app's pairs; no prices. Files: scripts/odpt_crosscheck.py, docs/data-verification.md.
       Done when: SUCCESS ODPT item passes, or is recorded as "not pursued" with a reason.
       Does not change the pairing logic.
