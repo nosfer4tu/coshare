@@ -1,0 +1,83 @@
+{
+  "routes": [
+    {
+      "origin": "KIX",
+      "destination": "TPE",
+      "flight_date": "2026-12-03",
+      "captured_on": "2026-10-19",
+      "source": "Skyscanner (manual check)",
+      "cabin": "economy",
+      "passengers": 1,
+      "trip": "one-way",
+      "entries": [
+        {
+          "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI157",
+          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 36849,
+          "seller": "Kiwi.com", "airline_site_price_jpy": 36850
+        },
+        {
+          "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI153",
+          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 68850,
+          "seller": "エアトリ", "airline_site_price_jpy": 69350
+        },
+        {
+          "kind": "full_service", "airline": "China Airlines",
+          "dep": "19:00", "arr": "21:25", "stops": 0, "price_jpy": 50145,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR131",
+          "dep": "12:55", "arr": "15:05", "stops": 0, "price_jpy": 40828,
+          "seller": "HIS"
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH5811",
+          "operating_code": "BR",
+          "dep": "12:55", "arr": "15:05", "stops": 0, "price_jpy": 195727,
+          "seller": "Expedia", "airline_site_price_jpy": 196710, "same_flight_as": "BR131"
+        },
+        {
+          "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR177",
+          "dep": "10:55", "arr": "13:10", "stops": 0, "price_jpy": 37122,
+          "seller": "HIS"
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH5833",
+          "operating_code": "BR",
+          "dep": "10:55", "arr": "13:10", "stops": 0, "price_jpy": 259710,
+          "seller": "スカイチケット", "same_flight_as": "BR177", "note": "販売元は1社のみ"
+        },
+        {
+          "kind": "lcc", "airline": "Jetstar Japan",
+          "dep": "23:10", "arr": "01:30", "arr_next_day": true, "stops": 0, "price_jpy": 20718,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "lcc", "airline": "AirAsia",
+          "dep": "20:55", "arr": "23:15", "stops": 0, "price_jpy": 21115,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "lcc", "airline": "Tigerair Taiwan",
+          "dep": "19:55", "arr": "22:30", "stops": 0, "price_jpy": 22217,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "lcc", "airline": "Thai VietJet",
+          "dep": "12:00", "arr": "14:15", "stops": 0, "price_jpy": 22720,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "lcc", "airline": "Jetstar Japan",
+          "dep": "14:55", "arr": "17:15", "stops": 0, "price_jpy": 23718,
+          "seller": "lowest listed"
+        },
+        {
+          "kind": "lcc", "airline": "Tigerair Taiwan",
+          "dep": "11:30", "arr": "13:50", "stops": 0, "price_jpy": 24183,
+          "seller": "lowest listed"
+        }
+      ]
+    }
+  ]
+}

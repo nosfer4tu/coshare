@@ -123,6 +123,17 @@ def verified_checks():
         return Response(json.dumps({"error": "照合記録の取得に失敗しました"}), status=500, mimetype='application/json')
     return Response(json.dumps({"data": result}, default=str), status=200, mimetype='application/json')
 
+@app.route('/api/real-prices')
+def real_prices():
+    from real_prices import lookup_response
+
+    status, body = lookup_response(
+        request.args.get('origin'),
+        request.args.get('destination'),
+        request.args.get('departureDate'),
+    )
+    return Response(json.dumps(body, ensure_ascii=False), status=status, mimetype='application/json')
+
 @app.route('/api/places/suggestions')
 def places_suggestions():
     import requests as req
