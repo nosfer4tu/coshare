@@ -17,7 +17,10 @@ function isConnecting(offer) {
 export function groupOffers(offers, mode) {
     const connecting = offers.filter(isConnecting);
     const grouped = offers.filter((offer) => !isConnecting(offer)).reduce((groups, offer) => {
-        const key = `${offer["Departure Time"]}_${offer["Operating IATA"]}`;
+        // Airports are part of the key: two airports of one city can share a departure time and
+        // operating carrier. Offers cached before the airport keys existed have both as
+        // undefined, so they still group on time + carrier alone.
+        const key = `${offer["Departure Airport"]}_${offer["Arrival Airport"]}_${offer["Departure Time"]}_${offer["Operating IATA"]}`;
         if (!groups[key]) groups[key] = [];
         groups[key].push(offer);
         return groups;

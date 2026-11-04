@@ -44,13 +44,26 @@ Small, reviewable diffs. Show the diff before explaining it.
 - `api/<area>/*.py` Vercel serverless handlers; shared backend modules live in `api/_lib/`.
 - `api/_lib/duffel_service.py` Duffel API calls (offer_requests, return_offers=true).
 - `api/_lib/normalizer.py` raw Duffel → normalized offers. All display-carrier logic is here.
-- `api/_lib/codeshare_service.py` `get_codeshare_offers`: keeps offers with `is Codeshare`
-  and drops `Owner Airline IATA` in `{"HR"}`. Called only by `/api/codeshare/detect`
-  (ResultsPage mode `codeshare`); in `/api/flights/search` (mode `both`) the call is commented
-  out, so that route does no server-side HR filtering.
+- `api/_lib/search_service.py` `get_normalized_offers(origin, destination, departure_date,
+  passengers, cabin_class)`: the one search path. Used by `/api/flights/search` and
+  `/api/codeshare/detect` in both `local_server.py` and the Vercel handlers. Cache read, else
+  Duffel fetch → normalize (ZZ dropped) → `search_cache` write + `price_history`. **The cache
+  always holds the FULL normalized list**, under the key `cache_route()` =
+  `f"{SEARCH_CACHE_VERSION}:{origin}-{destination}"` (`"v2:KIX-TPE"`; `route` is varchar(20) in
+  both tables). Bump `SEARCH_CACHE_VERSION` when the cached payload changes; old rows are left
+  to expire (the 24h TTL), never deleted. A Duffel error (`errors` or no `data`) or an empty
+  normalized list writes nothing and returns `[]`, so the next request retries Duffel.
+  `price_history` keeps the unprefixed route (`KIX-TPE`), which `trend_service` reads.
+- `api/_lib/codeshare_service.py` `filter_codeshare_offers(normalized)`: keeps offers with
+  `is Codeshare` and drops `Owner Airline IATA` in `{"HR"}`. `get_codeshare_offers(raw)` is the
+  same rule on a raw Duffel response. Only `/api/codeshare/detect` (ResultsPage mode
+  `codeshare`) applies it, **after** the cache read on every request; `/api/flights/search`
+  (mode `both`) returns the full list, so it does no server-side HR filtering.
 - **Pairing runs in the frontend**: `groupOffers(offers, mode)` in
   `frontend/src/utils/groupOffers.js` (pure; tests in `groupOffers.test.mjs`), called from
-  `ResultsPage.jsx`. Nonstop offers are grouped by `` `${Departure Time}_${Operating IATA}` ``;
+  `ResultsPage.jsx`. Nonstop offers are grouped by
+  `` `${Departure Airport}_${Arrival Airport}_${Departure Time}_${Operating IATA}` `` (airports
+  keep e.g. HND and NRT departures at the same time from pairing);
   groups with >1 offer are codeshare groups (gap logic in `frontend/src/utils/codeshareGap.js`).
   An offer with `'Segment Count' > 1` never joins a group (its key describes only the last leg);
   offers with `'Segment Count'` 1 or absent (older cache rows) group as before. Codeshare mode
@@ -198,11 +211,7 @@ Small, reviewable diffs. Show the diff before explaining it.
   (temporary dump), not from memory of the API shape.
 
 ## Known issues (not yet fixed)
-- **Shared `search_cache` key.** `/api/flights/search` and `/api/codeshare/detect` read and
-  write the same key (route, date, cabin, passengers) but store different content: the first
-  stores all normalized offers, the second only `get_codeshare_offers` output. Within the 24h
-  TTL, a search on one route replays the other's stored result, in both directions.
-- **HR is filtered only on `/api/codeshare/detect`** (`get_codeshare_offers`, on
+- **HR is filtered only on `/api/codeshare/detect`** (`filter_codeshare_offers`, on
   `Owner Airline IATA`). `/api/flights/search` returns HR offers unfiltered.
 - **Vercel handlers vs contract.** `api/flights/search.py` and `api/codeshare/detect.py` read
   snake_case params (`departure_date`, `cabin_class`); the contract and `local_server.py` use

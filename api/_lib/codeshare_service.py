@@ -2,10 +2,11 @@ from normalizer import normalize_offers
 
 TICKETING_CARRIERS = {"HR"}
 
-def get_codeshare_offers(raw_response):
-    cleaned_offers = normalize_offers(raw_response)
-    codeshare_offers = [
-        offer for offer in cleaned_offers
+def filter_codeshare_offers(normalized_offers):
+    return [
+        offer for offer in normalized_offers
         if offer.get("is Codeshare") and offer.get("Owner Airline IATA") not in TICKETING_CARRIERS
     ]
-    return codeshare_offers
+
+def get_codeshare_offers(raw_response):
+    return filter_codeshare_offers(normalize_offers(raw_response))

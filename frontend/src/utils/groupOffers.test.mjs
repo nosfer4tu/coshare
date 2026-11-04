@@ -29,6 +29,16 @@ test('two nonstop sellers of one flight pair', () => {
     assert.deepEqual(ids(groupOffers([ci, jl], "codeshare")), [["ci", "jl"]]);
 });
 
+test('same departure time and operating carrier from different airports (HND vs NRT) do not pair', () => {
+    const route = { "Arrival Airport": "TPE" };
+    const hnd = offer("hnd", { ...route, "Departure Airport": "HND" });
+    const nrt = offer("nrt", { ...route, "Departure Airport": "NRT", "Total Amount": 30000 });
+    assert.deepEqual(ids(groupOffers([hnd, nrt], "both")), [["hnd"], ["nrt"]]);
+    // Same airports still pair.
+    const hnd2 = offer("hnd2", { ...route, "Departure Airport": "HND", "Owner Airline IATA": "JL", "Total Amount": 35000 });
+    assert.deepEqual(ids(groupOffers([hnd, nrt, hnd2], "both")), [["hnd", "hnd2"], ["nrt"]]);
+});
+
 test('connecting itineraries with different first legs and the same last leg do not pair', () => {
     const lastLeg = { "Departure Time": "2027-03-01T18:00:00", "Operating IATA": "CI", "Segment Count": 2 };
     const a = offer("a", { ...lastLeg, "First Departure Time": "2027-03-01T08:00:00", "Owner Airline IATA": "VJ" });
