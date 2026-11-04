@@ -213,10 +213,16 @@ class LookupResponseTest(unittest.TestCase):
             set(body), {"found", "flight_date", "captured_on", "source", "entries", "summary"})
         self.assertEqual(body["flight_date"], "2026-12-03")
         self.assertEqual(body["captured_on"], "2026-10-19")
-        self.assertEqual(body["source"], "Skyscanner (manual check)")
+        self.assertEqual(body["source"], "Skyscanner(手動確認)")
         prices = [e["price_jpy"] for e in body["entries"]]
         self.assertEqual(prices, sorted(prices))
         self.assertEqual(len(prices), 13)
+
+    def test_lcc_and_unnamed_sellers_use_the_japanese_label(self):
+        _, body = self.lookup()
+        sellers = {e["seller"] for e in body["entries"]}
+        self.assertIn("最安の予約サイト", sellers)
+        self.assertNotIn("lowest listed", sellers)
 
     def test_summary_cheapest_lcc(self):
         _, body = self.lookup()

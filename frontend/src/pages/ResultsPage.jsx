@@ -7,11 +7,14 @@ import Navbar from "../components/common/Navbar";
 import TestDataNotice from "../components/common/TestDataNotice";
 import "./ResultsPage.css";
 import SkeletonLoader from "../components/common/SkeletonLoader";
-import { ErrorMessage, EmptyMessage } from "../components/common/StatusMessage";
+import { ErrorMessage } from "../components/common/StatusMessage";
 import SearchBar from "../components/search/SearchBar";
 import SearchModeSelector from "../components/search/SearchModeSelector";
 import { groupOffers } from "../utils/groupOffers";
 import { findBadgeCheck } from "../utils/verifiedChecks";
+import RealPricesPanel from "../components/results/RealPricesPanel";
+import ResultsStatusScreen, { EmptyResultsScreen } from "../components/results/ResultsStatusScreen";
+import { useRealPrices } from "../hooks/useRealPrices";
 function ResultsPage(){
     const location = useLocation();
     const navigate = useNavigate();
@@ -134,6 +137,9 @@ function ResultsPage(){
         return () => { cancelled = true; };
     }, [searchedRoute, searchedDate]);
 
+    // Hook before the early returns; follows the committed search like the badges.
+    const realPrices = useRealPrices(searchParams.get("origin"), searchParams.get("destination"), searchedDate);
+
     if (loading) return (
         <div>
             <Navbar />
@@ -141,20 +147,14 @@ function ResultsPage(){
         </div>
     );
     if (error) return (
-        <div>
-            <Navbar />
+        <ResultsStatusScreen realPrices={realPrices}>
             <ErrorMessage message={error} />
-        </div>
+        </ResultsStatusScreen>
     );
     const sortedGroups = groupOffers(results, searchMode);
     const getVerifiedCheck = (carrierName, displayedPrice) =>
         findBadgeCheck(verifiedChecks, { route: searchedRoute, flightDate: searchedDate, carrierName, displayedPrice });
-    if (sortedGroups.length === 0) return (
-        <div>
-            <Navbar />
-            <EmptyMessage />
-        </div>
-    );
+    if (sortedGroups.length === 0) return <EmptyResultsScreen realPrices={realPrices} />;
     return (
     <>
         <Navbar />
@@ -184,6 +184,7 @@ function ResultsPage(){
             <TestDataNotice>
                 表示している価格は、Duffel APIのテスト環境のデータです。実際の販売価格ではありません。ご予約の前に、必ず航空会社の公式サイトで価格をご確認ください。
             </TestDataNotice>
+            <RealPricesPanel state={realPrices.state} search={realPrices.search} />
             <p className="results-page__section-label">コードシェア便の価格差</p>
             <PriceGapExplainer />
             <div className="results-page__list">

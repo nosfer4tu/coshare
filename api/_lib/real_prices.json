@@ -5,7 +5,7 @@
       "destination": "TPE",
       "flight_date": "2026-12-03",
       "captured_on": "2026-10-19",
-      "source": "Skyscanner (manual check)",
+      "source": "Skyscanner(手動確認)",
       "cabin": "economy",
       "passengers": 1,
       "trip": "one-way",
@@ -23,7 +23,7 @@
         {
           "kind": "full_service", "airline": "China Airlines",
           "dep": "19:00", "arr": "21:25", "stops": 0, "price_jpy": 50145,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR131",
@@ -50,32 +50,32 @@
         {
           "kind": "lcc", "airline": "Jetstar Japan",
           "dep": "23:10", "arr": "01:30", "arr_next_day": true, "stops": 0, "price_jpy": 20718,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "lcc", "airline": "AirAsia",
           "dep": "20:55", "arr": "23:15", "stops": 0, "price_jpy": 21115,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "lcc", "airline": "Tigerair Taiwan",
           "dep": "19:55", "arr": "22:30", "stops": 0, "price_jpy": 22217,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "lcc", "airline": "Thai VietJet",
           "dep": "12:00", "arr": "14:15", "stops": 0, "price_jpy": 22720,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "lcc", "airline": "Jetstar Japan",
           "dep": "14:55", "arr": "17:15", "stops": 0, "price_jpy": 23718,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         },
         {
           "kind": "lcc", "airline": "Tigerair Taiwan",
           "dep": "11:30", "arr": "13:50", "stops": 0, "price_jpy": 24183,
-          "seller": "lowest listed"
+          "seller": "最安の予約サイト"
         }
       ]
     }
