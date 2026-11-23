@@ -78,6 +78,172 @@
           "seller": "最安の予約サイト"
         }
       ]
+    },
+    {
+      "origin": "KIX",
+      "destination": "TPE",
+      "flight_date": "2027-02-22",
+      "captured_on": "2026-11-23",
+      "source": "Skyscanner(スクレイパーAPI・一部手動確認)",
+      "cabin": "economy",
+      "passengers": 1,
+      "trip": "one-way",
+      "entries": [
+        {
+          "kind": "lcc", "airline": "Peach", "marketing_code": "MM", "flight_number": "MM23",
+          "dep": "07:15", "arr": "09:45", "stops": 0, "price_jpy": 21250,
+          "seller": "TeaFlight", "airline_site_price_jpy": 21790
+        },
+        {
+          "kind": "lcc", "airline": "Peach", "marketing_code": "MM", "flight_number": "MM25",
+          "dep": "10:10", "arr": "12:40", "stops": 0, "price_jpy": 24439,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR177",
+          "dep": "10:55", "arr": "13:10", "stops": 0, "price_jpy": 41471,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH5833",
+          "dep": "10:55", "arr": "13:10", "stops": 0, "price_jpy": 203302,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Tigerair Taiwan", "marketing_code": "IT", "flight_number": "IT211",
+          "dep": "11:30", "arr": "13:50", "stops": 0, "price_jpy": 27999,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Thai VietJet", "marketing_code": "VZ", "flight_number": "VZ567",
+          "dep": "12:00", "arr": "14:15", "stops": 0, "price_jpy": 25784,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Starlux Airlines", "marketing_code": "JX", "flight_number": "JX821",
+          "dep": "12:20", "arr": "14:40", "stops": 0, "price_jpy": 43650,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI157",
+          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 39510,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Japan Airlines", "marketing_code": "JL", "flight_number": "JL5103",
+          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 101678,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR131",
+          "dep": "12:55", "arr": "15:05", "stops": 0, "price_jpy": 40688,
+          "seller": "Flightnetwork"
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH5811",
+          "operating_code": "BR",
+          "dep": "12:55", "arr": "15:05", "stops": 0, "price_jpy": 196807,
+          "seller": "Kiwi.com", "airline_site_price_jpy": 206510, "same_flight_as": "BR131"
+        },
+        {
+          "kind": "lcc", "airline": "AirAsia", "marketing_code": "AK", "flight_number": "AK179",
+          "dep": "13:25", "arr": "15:45", "stops": 0, "price_jpy": 42900,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Starlux Airlines", "marketing_code": "JX", "flight_number": "JX823",
+          "dep": "14:00", "arr": "16:20", "stops": 0, "price_jpy": 43650,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI153",
+          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 39510,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Japan Airlines", "marketing_code": "JL", "flight_number": "JL5105",
+          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 101678,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Jetstar Japan", "marketing_code": "GK", "flight_number": "GK55",
+          "dep": "14:55", "arr": "17:15", "stops": 0, "price_jpy": 23410,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Peach", "marketing_code": "MM", "flight_number": "MM27",
+          "dep": "15:25", "arr": "17:55", "stops": 0, "price_jpy": 24439,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Cathay Pacific", "marketing_code": "CX", "flight_number": "CX565",
+          "dep": "16:15", "arr": "18:30", "stops": 0, "price_jpy": 42563,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR129",
+          "dep": "18:10", "arr": "20:25", "stops": 0, "price_jpy": 41471,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH5827",
+          "dep": "18:10", "arr": "20:25", "stops": 0, "price_jpy": 202093,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Tigerair Taiwan", "marketing_code": "IT", "flight_number": "IT213",
+          "dep": "18:55", "arr": "21:15", "stops": 0, "price_jpy": 27999,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI173",
+          "dep": "19:00", "arr": "21:25", "stops": 0, "price_jpy": 54421,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Japan Airlines", "marketing_code": "JL", "flight_number": "JL5107",
+          "dep": "19:00", "arr": "21:25", "stops": 0, "price_jpy": 101678,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "full_service", "airline": "Starlux Airlines", "marketing_code": "JX", "flight_number": "JX825",
+          "dep": "20:10", "arr": "22:30", "stops": 0, "price_jpy": 43700,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "AirAsia", "marketing_code": "AK", "flight_number": "AK177",
+          "dep": "20:55", "arr": "23:15", "stops": 0, "price_jpy": 30869,
+          "seller": "最安の予約サイト"
+        },
+        {
+          "kind": "lcc", "airline": "Jetstar Japan", "marketing_code": "GK", "flight_number": "GK57",
+          "dep": "23:10", "arr": "01:30", "arr_next_day": true, "stops": 0, "price_jpy": 23410,
+          "seller": "最安の予約サイト"
+        }
+      ]
+    },
+    {
+      "origin": "NRT",
+      "destination": "BOM",
+      "flight_date": "2027-02-22",
+      "captured_on": "2026-11-23",
+      "source": "Skyscanner(スクレイパーAPI・一部手動確認)",
+      "cabin": "economy",
+      "passengers": 1,
+      "trip": "one-way",
+      "entries": [
+        {
+          "kind": "full_service", "airline": "Air India", "marketing_code": "AI", "flight_number": "AI8001",
+          "operating_code": "NH",
+          "dep": "11:15", "arr": "18:35", "stops": 0, "price_jpy": 216870,
+          "seller": "Air India公式サイト", "airline_site_price_jpy": 216870
+        },
+        {
+          "kind": "full_service", "airline": "ANA", "marketing_code": "NH", "flight_number": "NH829",
+          "dep": "11:15", "arr": "18:35", "stops": 0, "price_jpy": 299970,
+          "seller": "ANA公式サイト", "airline_site_price_jpy": 299970, "same_flight_as": "AI8001", "note": "スクレイパーの最安値は¥103,336(Kiwi.com)で、公式価格より30%以上低い外れ値のため公式価格を掲載"
+        }
+      ]
     }
   ]
 }

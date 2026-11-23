@@ -105,7 +105,7 @@ function RealPricesPanel({ state, search }) {
             <p className="real-prices__intro">
                 手動で確認した実際の価格(確認日 <span className="mono">{data.captured_on}</span>)。現在の価格とは異なる場合があります
             </p>
-            <p className="real-prices__source">出典: {data.source}</p>
+            <p className="real-prices__source">出典: {data.source}・直行便のみ</p>
 
             {(summary.cheapest_lcc || summary.cheapest_full_service) && (
                 <ul className="real-prices__lines">

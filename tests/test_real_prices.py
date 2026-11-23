@@ -17,6 +17,8 @@ from real_prices import (  # noqa: E402
 )
 
 TODAY = date(2026, 11, 4)
+# The 2027-02-22 records were captured on 2026-11-23, which TODAY (above) still treats as future.
+DATA_TODAY = date(2026, 11, 23)
 
 
 def make_entry(**overrides):
@@ -40,8 +42,8 @@ def make_route(**overrides):
 
 class SeedDataTest(unittest.TestCase):
     def test_seed_file_is_valid(self):
-        routes = load_routes(DATA_FILE, today=TODAY)
-        self.assertEqual(len(routes), 1)
+        routes = load_routes(DATA_FILE, today=DATA_TODAY)
+        self.assertEqual(len(routes), 3)
         route = routes[0]
         self.assertEqual((route["origin"], route["destination"], route["flight_date"]),
                          ("KIX", "TPE", "2026-12-03"))
@@ -50,7 +52,7 @@ class SeedDataTest(unittest.TestCase):
 
     def test_seed_validates_with_validate_routes(self):
         with open(DATA_FILE, encoding="utf-8") as f:
-            self.assertEqual(validate_routes(json.load(f)["routes"], today=TODAY), [])
+            self.assertEqual(validate_routes(json.load(f)["routes"], today=DATA_TODAY), [])
 
 
 class ValidateRouteTest(unittest.TestCase):
@@ -190,7 +192,7 @@ class LoadRoutesTest(unittest.TestCase):
 
 class LookupResponseTest(unittest.TestCase):
     def lookup(self, origin="KIX", destination="TPE", departure_date="2026-12-03"):
-        return lookup_response(origin, destination, departure_date, today=TODAY)
+        return lookup_response(origin, destination, departure_date, today=DATA_TODAY)
 
     def test_unknown_route_not_found(self):
         self.assertEqual(self.lookup("KIX", "ICN"), (200, {"found": False}))
@@ -261,6 +263,124 @@ class LookupResponseTest(unittest.TestCase):
         self.assertIn("error", body)
 
 
+class Feb2027RecordsTest(unittest.TestCase):
+    """KIX-TPE and NRT-BOM on 2027-02-22: scraper data with hand-verified overrides (2026-11-23)."""
+
+    SOURCE = "Skyscanner(スクレイパーAPI・一部手動確認)"
+
+    def lookup(self, origin, destination):
+        status, body = lookup_response(origin, destination, "2027-02-22", today=DATA_TODAY)
+        self.assertEqual(status, 200)
+        self.assertTrue(body["found"])
+        return body
+
+    def entry(self, body, flight_number):
+        return next(e for e in body["entries"] if e.get("flight_number") == flight_number)
+
+    def test_december_record_is_untouched(self):
+        status, body = lookup_response("KIX", "TPE", "2026-12-03", today=DATA_TODAY)
+        self.assertEqual(status, 200)
+        self.assertEqual(body["source"], "Skyscanner(手動確認)")
+        self.assertEqual(body["captured_on"], "2026-10-19")
+        self.assertEqual(len(body["entries"]), 13)
+
+    def test_route_level_metadata(self):
+        for origin, destination in (("KIX", "TPE"), ("NRT", "BOM")):
+            body = self.lookup(origin, destination)
+            self.assertEqual(body["source"], self.SOURCE)
+            self.assertEqual(body["captured_on"], "2026-11-23")
+            self.assertEqual(body["flight_date"], "2027-02-22")
+            self.assertTrue(all(e["stops"] == 0 for e in body["entries"]))
+
+    def test_kix_tpe_entry_count_and_sorting(self):
+        body = self.lookup("KIX", "TPE")
+        self.assertEqual(len(body["entries"]), 26)
+        prices = [e["price_jpy"] for e in body["entries"]]
+        self.assertEqual(prices, sorted(prices))
+
+    def test_kix_tpe_hand_verified_prices(self):
+        body = self.lookup("KIX", "TPE")
+        br = self.entry(body, "BR131")
+        self.assertEqual((br["price_jpy"], br["seller"]), (40688, "Flightnetwork"))
+        nh = self.entry(body, "NH5811")
+        self.assertEqual((nh["price_jpy"], nh["seller"], nh["airline_site_price_jpy"]),
+                         (196807, "Kiwi.com", 206510))
+        mm = self.entry(body, "MM23")
+        self.assertEqual((mm["price_jpy"], mm["seller"], mm["airline_site_price_jpy"]),
+                         (21250, "TeaFlight", 21790))
+
+    def test_kix_tpe_has_exactly_one_confirmed_pair(self):
+        body = self.lookup("KIX", "TPE")
+        nh = self.entry(body, "NH5811")
+        self.assertEqual((nh["operating_code"], nh["same_flight_as"]), ("BR", "BR131"))
+        # Unconfirmed codeshares are plain entries: no link and no operating carrier.
+        for number in ("NH5833", "NH5827", "JL5103", "JL5105", "JL5107"):
+            entry = self.entry(body, number)
+            self.assertNotIn("same_flight_as", entry, number)
+            self.assertNotIn("operating_code", entry, number)
+        linked = [e["flight_number"] for e in body["entries"] if "same_flight_as" in e]
+        self.assertEqual(linked, ["NH5811"])
+        pairs = body["summary"]["codeshare_pairs"]
+        self.assertEqual(len(pairs), 1)
+        self.assertEqual(pairs[0]["cheaper"]["flight_number"], "BR131")
+        self.assertEqual(pairs[0]["pricier"]["flight_number"], "NH5811")
+        self.assertEqual(pairs[0]["gap_jpy"], 196807 - 40688)
+
+    def test_kix_tpe_summary(self):
+        summary = self.lookup("KIX", "TPE")["summary"]
+        self.assertEqual(summary["cheapest_lcc"]["flight_number"], "MM23")
+        self.assertEqual(summary["cheapest_lcc"]["price_jpy"], 21250)
+        self.assertEqual(summary["cheapest_full_service"]["flight_number"], "CI157")
+
+    def test_carrier_names_are_english(self):
+        body = self.lookup("KIX", "TPE")
+        names = {e["airline"] for e in body["entries"]}
+        self.assertIn("Peach", names)
+        self.assertIn("Japan Airlines", names)
+        self.assertFalse(any(ord(ch) > 0x2FFF for name in names for ch in name), names)
+
+    def test_nrt_bom_has_no_lcc(self):
+        body = self.lookup("NRT", "BOM")
+        self.assertEqual(len(body["entries"]), 2)
+        self.assertFalse(any(e["kind"] == "lcc" for e in body["entries"]))
+        self.assertIsNone(body["summary"]["cheapest_lcc"])
+        self.assertIsNotNone(body["summary"]["cheapest_full_service"])
+        json.dumps(body, ensure_ascii=False)  # serialisable, so the endpoint cannot crash on it
+
+    def test_nrt_bom_official_prices_and_outlier_note(self):
+        body = self.lookup("NRT", "BOM")
+        nh = self.entry(body, "NH829")
+        self.assertEqual((nh["price_jpy"], nh["seller"], nh["airline_site_price_jpy"]),
+                         (299970, "ANA公式サイト", 299970))
+        self.assertIn("103,336", nh["note"])
+        self.assertIn("30%", nh["note"])
+        ai = self.entry(body, "AI8001")
+        self.assertEqual((ai["price_jpy"], ai["seller"], ai["airline_site_price_jpy"]),
+                         (216870, "Air India公式サイト", 216870))
+        self.assertEqual(ai["operating_code"], "NH")
+
+    def test_nrt_bom_exactly_one_pair_linked_from_the_pricier_flight(self):
+        body = self.lookup("NRT", "BOM")
+        self.assertEqual(self.entry(body, "NH829")["same_flight_as"], "AI8001")
+        self.assertNotIn("same_flight_as", self.entry(body, "AI8001"))
+        pairs = body["summary"]["codeshare_pairs"]
+        self.assertEqual(len(pairs), 1)
+        self.assertEqual(pairs[0]["cheaper"]["flight_number"], "AI8001")
+        self.assertEqual(pairs[0]["pricier"]["flight_number"], "NH829")
+        self.assertEqual(pairs[0]["gap_jpy"], 299970 - 216870)
+        self.assertEqual(body["summary"]["cheapest_full_service"]["flight_number"], "AI8001")
+
+    def test_official_price_replaces_a_lowest_price_over_30_percent_below_it(self):
+        # The documented rule: no stored entry's price may sit more than 30% below the official
+        # site price it carries (the outlier is replaced by the official price, with a note).
+        for route in load_routes(DATA_FILE, today=DATA_TODAY):
+            for entry in route["entries"]:
+                site = entry.get("airline_site_price_jpy")
+                if site:
+                    self.assertGreaterEqual(entry["price_jpy"], site * 0.7,
+                                            f"{route['origin']}-{route['destination']} {entry.get('flight_number')}")
+
+
 class BuildSummaryTest(unittest.TestCase):
     def test_no_lcc_or_pairs(self):
         summary = build_summary([make_entry()])
@@ -311,6 +431,14 @@ class FlaskEndpointTest(unittest.TestCase):
         self.assertEqual(body["summary"]["cheapest_lcc"]["price_jpy"], 20718)
         gaps = {p["cheaper"]["flight_number"]: p["gap_jpy"] for p in body["summary"]["codeshare_pairs"]}
         self.assertEqual(gaps["BR131"], 154899)
+
+    def test_nrt_bom_route_without_lcc(self):
+        res = self.client.get("/api/real-prices?origin=NRT&destination=BOM&departureDate=2027-02-22")
+        self.assertEqual(res.status_code, 200)
+        body = res.get_json()
+        self.assertTrue(body["found"])
+        self.assertIsNone(body["summary"]["cheapest_lcc"])
+        self.assertEqual(len(body["summary"]["codeshare_pairs"]), 1)
 
     def test_missing_params_400(self):
         res = self.client.get("/api/real-prices?origin=KIX&destination=TPE")

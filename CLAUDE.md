@@ -128,6 +128,20 @@ Small, reviewable diffs. Show the diff before explaining it.
   hand-verified by clicking — an agent must not "correct" them from pattern-guessing
   (that's how `/jp/ja` broke; China Airlines is `/jp/jp/`). Missing code → render no button.
 
+## Real prices dataset (hand-curated)
+- Data: `api/_lib/real_prices.json`; loader/validator/lookup: `api/_lib/real_prices.py`
+  (`lookup_response`, shared by `local_server.py` and `api/real-prices/index.py`); tests:
+  `tests/test_real_prices.py`. Shown on ResultsPage as 「実測価格との比較」, nonstop flights only,
+  apart from the Duffel cards. One record per (origin, destination, flight_date).
+- The owner verifies and maintains the data. A scraper run (`scripts/fetch_real_prices.py`, not
+  committed) only produces a candidate; hand-verified overrides are applied before merging, and
+  the record's `source` says so (「…・一部手動確認」).
+- **Outlier rule:** when the lowest listed price is more than 30% below the official site price,
+  store the official price (`seller` = the official site, `airline_site_price_jpy` = same value)
+  and say why in the entry's `note`. Tested in `Feb2027RecordsTest`.
+- `same_flight_as` goes on the pricier flight. Set `operating_code` and `same_flight_as` only for
+  codeshares whose operating carrier is confirmed; otherwise keep the flights as plain entries.
+
 ## Environment
 - Duffel is in **TEST MODE**: prices are synthetic; ZZ offers appear in raw responses.
   Do not present prices as real-market data.

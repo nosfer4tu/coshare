@@ -131,3 +131,63 @@ test('hidden (400), loading and missing search render nothing', () => {
     assert.equal(render({ state: { status: 'loading' }, search }), '');
     assert.equal(render({ state: { status: 'noData' }, search: null }), '');
 });
+
+// NRT-BOM 2027-02-22: no LCC at all (summary.cheapest_lcc is null) and exactly one pair.
+const nrtSearch = { origin: 'NRT', destination: 'BOM', departureDate: '2027-02-22' };
+const nhOfficial = {
+    kind: 'full_service', airline: 'ANA', marketing_code: 'NH', flight_number: 'NH829', dep: '11:15', arr: '18:35',
+    stops: 0, price_jpy: 299970, seller: 'ANA公式サイト', airline_site_price_jpy: 299970, same_flight_as: 'AI8001',
+    note: 'スクレイパーの最安値は¥103,336(Kiwi.com)で、公式価格より30%以上低い外れ値のため公式価格を掲載',
+};
+const aiOfficial = {
+    kind: 'full_service', airline: 'Air India', marketing_code: 'AI', flight_number: 'AI8001', operating_code: 'NH',
+    dep: '11:15', arr: '18:35', stops: 0, price_jpy: 216870, seller: 'Air India公式サイト',
+    airline_site_price_jpy: 216870,
+};
+const nrtBom = {
+    status: 'found',
+    data: {
+        found: true, flight_date: '2027-02-22', captured_on: '2026-11-23',
+        source: 'Skyscanner(スクレイパーAPI・一部手動確認)',
+        entries: [aiOfficial, nhOfficial],
+        summary: {
+            cheapest_lcc: null,
+            cheapest_full_service: aiOfficial,
+            codeshare_pairs: [{
+                cheaper: { airline: 'Air India', flight_number: 'AI8001', price_jpy: 216870, seller: 'Air India公式サイト' },
+                pricier: { airline: 'ANA', flight_number: 'NH829', price_jpy: 299970, seller: 'ANA公式サイト' },
+                gap_jpy: 83100,
+            }],
+        },
+    },
+};
+
+test('found: says the panel covers nonstop flights only', () => {
+    assert.match(render({ state: found, search }), /直行便のみ/);
+    assert.match(render({ state: nrtBom, search: nrtSearch }), /直行便のみ/);
+});
+
+test('found without LCC entries (null cheapest_lcc): no LCC line, no crash, full-service line stays', () => {
+    const html = render({ state: nrtBom, search: nrtSearch });
+    assert.doesNotMatch(html, /最安LCC/);
+    assert.doesNotMatch(html, /real-prices__badge/);
+    assert.match(html, /最安フルサービス/);
+    assert.match(html, /AI8001/);
+    assert.match(html, /Air India公式サイト/);
+});
+
+test('found without LCC entries: summary lines render when both cheapest entries are null', () => {
+    const noLines = { ...nrtBom, data: { ...nrtBom.data, summary: { ...nrtBom.data.summary, cheapest_full_service: null } } };
+    const html = render({ state: noLines, search: nrtSearch });
+    assert.doesNotMatch(html, /最安LCC|最安フルサービス/);
+    assert.match(html, /同じ便の価格差/);
+});
+
+test('NRT-BOM: exactly one pair with the gap, plus the official-price note and site column', () => {
+    const html = render({ state: nrtBom, search: nrtSearch });
+    assert.equal((html.match(/class="real-prices__pair"/g) ?? []).length, 1);
+    assert.match(html, /差額 <span[^>]*>(￥|¥)83,100<\/span>/);
+    assert.match(html, /全2件の価格を見る/);
+    assert.match(html, /公式サイト/);
+    assert.match(html, /外れ値のため公式価格を掲載/);
+});
