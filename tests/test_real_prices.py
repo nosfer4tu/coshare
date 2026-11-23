@@ -309,22 +309,59 @@ class Feb2027RecordsTest(unittest.TestCase):
         self.assertEqual((mm["price_jpy"], mm["seller"], mm["airline_site_price_jpy"]),
                          (21250, "TeaFlight", 21790))
 
-    def test_kix_tpe_has_exactly_one_confirmed_pair(self):
+    def pairs_by_cheaper(self, body):
+        return {p["cheaper"]["flight_number"]: p for p in body["summary"]["codeshare_pairs"]}
+
+    def test_kix_tpe_has_three_confirmed_pairs(self):
         body = self.lookup("KIX", "TPE")
         nh = self.entry(body, "NH5811")
         self.assertEqual((nh["operating_code"], nh["same_flight_as"]), ("BR", "BR131"))
         # Unconfirmed codeshares are plain entries: no link and no operating carrier.
-        for number in ("NH5833", "NH5827", "JL5103", "JL5105", "JL5107"):
+        for number in ("NH5833", "NH5827", "JL5107"):
             entry = self.entry(body, number)
             self.assertNotIn("same_flight_as", entry, number)
             self.assertNotIn("operating_code", entry, number)
-        linked = [e["flight_number"] for e in body["entries"] if "same_flight_as" in e]
-        self.assertEqual(linked, ["NH5811"])
+        linked = sorted(e["flight_number"] for e in body["entries"] if "same_flight_as" in e)
+        self.assertEqual(linked, ["JL5103", "JL5105", "NH5811"])
         pairs = body["summary"]["codeshare_pairs"]
-        self.assertEqual(len(pairs), 1)
-        self.assertEqual(pairs[0]["cheaper"]["flight_number"], "BR131")
-        self.assertEqual(pairs[0]["pricier"]["flight_number"], "NH5811")
-        self.assertEqual(pairs[0]["gap_jpy"], 196807 - 40688)
+        self.assertEqual(len(pairs), 3)
+        br_pair = self.pairs_by_cheaper(body)["BR131"]
+        self.assertEqual(br_pair["pricier"]["flight_number"], "NH5811")
+        self.assertEqual(br_pair["gap_jpy"], 196807 - 40688)
+
+    def test_kix_tpe_china_airlines_prices(self):
+        body = self.lookup("KIX", "TPE")
+        for number in ("CI157", "CI153"):
+            ci = self.entry(body, number)
+            self.assertEqual((ci["price_jpy"], ci["seller"], ci["airline_site_price_jpy"]),
+                             (39509, "Kiwi.com", 39510), number)
+            self.assertNotIn("same_flight_as", ci, number)
+            self.assertNotIn("operating_code", ci, number)
+        for number, ci in (("JL5103", "CI157"), ("JL5105", "CI153")):
+            jl = self.entry(body, number)
+            self.assertEqual((jl["price_jpy"], jl["seller"], jl["airline_site_price_jpy"]),
+                             (101590, "TeaFlight", 103230), number)
+            self.assertEqual((jl["operating_code"], jl["same_flight_as"]), ("CI", ci), number)
+
+    def test_kix_tpe_jal_codeshare_pairs(self):
+        body = self.lookup("KIX", "TPE")
+        pairs = self.pairs_by_cheaper(body)
+        self.assertEqual(set(pairs), {"BR131", "CI157", "CI153"})
+        for cheaper, pricier in (("CI157", "JL5103"), ("CI153", "JL5105")):
+            pair = pairs[cheaper]
+            self.assertEqual(pair["pricier"]["flight_number"], pricier)
+            self.assertEqual(pair["cheaper"]["price_jpy"], 39509)
+            self.assertEqual(pair["pricier"]["price_jpy"], 101590)
+            self.assertEqual(pair["pricier"]["seller"], "TeaFlight")
+            self.assertEqual(pair["gap_jpy"], 62081)
+
+    def test_kix_tpe_pair_order_is_by_pricier_flight_price(self):
+        # build_summary walks the price-sorted entries and emits a pair at the linked (pricier)
+        # entry, so the order is JL5103, JL5105, NH5811 (ties keep file order), not by gap.
+        body = self.lookup("KIX", "TPE")
+        order = [(p["cheaper"]["flight_number"], p["pricier"]["flight_number"])
+                 for p in body["summary"]["codeshare_pairs"]]
+        self.assertEqual(order, [("CI157", "JL5103"), ("CI153", "JL5105"), ("BR131", "NH5811")])
 
     def test_kix_tpe_summary(self):
         summary = self.lookup("KIX", "TPE")["summary"]

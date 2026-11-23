@@ -126,13 +126,14 @@
         },
         {
           "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI157",
-          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 39510,
-          "seller": "最安の予約サイト"
+          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 39509,
+          "seller": "Kiwi.com", "airline_site_price_jpy": 39510
         },
         {
           "kind": "full_service", "airline": "Japan Airlines", "marketing_code": "JL", "flight_number": "JL5103",
-          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 101678,
-          "seller": "最安の予約サイト"
+          "operating_code": "CI",
+          "dep": "12:45", "arr": "15:00", "stops": 0, "price_jpy": 101590,
+          "seller": "TeaFlight", "airline_site_price_jpy": 103230, "same_flight_as": "CI157"
         },
         {
           "kind": "full_service", "airline": "EVA Air", "marketing_code": "BR", "flight_number": "BR131",
@@ -157,13 +158,14 @@
         },
         {
           "kind": "full_service", "airline": "China Airlines", "marketing_code": "CI", "flight_number": "CI153",
-          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 39510,
-          "seller": "最安の予約サイト"
+          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 39509,
+          "seller": "Kiwi.com", "airline_site_price_jpy": 39510
         },
         {
           "kind": "full_service", "airline": "Japan Airlines", "marketing_code": "JL", "flight_number": "JL5105",
-          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 101678,
-          "seller": "最安の予約サイト"
+          "operating_code": "CI",
+          "dep": "14:30", "arr": "16:50", "stops": 0, "price_jpy": 101590,
+          "seller": "TeaFlight", "airline_site_price_jpy": 103230, "same_flight_as": "CI153"
         },
         {
           "kind": "lcc", "airline": "Jetstar Japan", "marketing_code": "GK", "flight_number": "GK55",
