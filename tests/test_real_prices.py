@@ -355,13 +355,14 @@ class Feb2027RecordsTest(unittest.TestCase):
             self.assertEqual(pair["pricier"]["seller"], "TeaFlight")
             self.assertEqual(pair["gap_jpy"], 62081)
 
-    def test_kix_tpe_pair_order_is_by_pricier_flight_price(self):
-        # build_summary walks the price-sorted entries and emits a pair at the linked (pricier)
-        # entry, so the order is JL5103, JL5105, NH5811 (ties keep file order), not by gap.
+    def test_kix_tpe_pair_order_is_by_gap_descending(self):
+        # build_summary sorts the pairs by gap, largest first; the two 62081 ties keep the order
+        # in which they were found (CI157/JL5103 before CI153/JL5105).
         body = self.lookup("KIX", "TPE")
         order = [(p["cheaper"]["flight_number"], p["pricier"]["flight_number"])
                  for p in body["summary"]["codeshare_pairs"]]
-        self.assertEqual(order, [("CI157", "JL5103"), ("CI153", "JL5105"), ("BR131", "NH5811")])
+        self.assertEqual(order, [("BR131", "NH5811"), ("CI157", "JL5103"), ("CI153", "JL5105")])
+        self.assertEqual([p["gap_jpy"] for p in body["summary"]["codeshare_pairs"]], [156119, 62081, 62081])
 
     def test_kix_tpe_summary(self):
         summary = self.lookup("KIX", "TPE")["summary"]

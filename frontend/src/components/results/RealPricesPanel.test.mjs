@@ -192,7 +192,7 @@ test('NRT-BOM: exactly one pair with the gap, plus the official-price note and s
     assert.match(html, /外れ値のため公式価格を掲載/);
 });
 
-// KIX-TPE 2027-02-22: three pairs on one route, in the order the API returns them.
+// KIX-TPE 2027-02-22: three pairs on one route, in the order the API returns them (gap descending).
 const kixFeb = { origin: 'KIX', destination: 'TPE', departureDate: '2027-02-22' };
 const side = (airline, flight_number, price_jpy, seller) => ({ airline, flight_number, price_jpy, seller });
 const threePairs = {
@@ -206,16 +206,16 @@ const threePairs = {
             cheapest_full_service: cheapFull,
             codeshare_pairs: [
                 {
+                    cheaper: side('EVA Air', 'BR131', 40688, 'Flightnetwork'),
+                    pricier: side('ANA', 'NH5811', 196807, 'Kiwi.com'), gap_jpy: 156119,
+                },
+                {
                     cheaper: side('China Airlines', 'CI157', 39509, 'Kiwi.com'),
                     pricier: side('Japan Airlines', 'JL5103', 101590, 'TeaFlight'), gap_jpy: 62081,
                 },
                 {
                     cheaper: side('China Airlines', 'CI153', 39509, 'Kiwi.com'),
                     pricier: side('Japan Airlines', 'JL5105', 101590, 'TeaFlight'), gap_jpy: 62081,
-                },
-                {
-                    cheaper: side('EVA Air', 'BR131', 40688, 'Flightnetwork'),
-                    pricier: side('ANA', 'NH5811', 196807, 'Kiwi.com'), gap_jpy: 156119,
                 },
             ],
         },
@@ -226,7 +226,7 @@ test('three pairs on one route: all render, in the order given, each with its ow
     const html = render({ state: threePairs, search: kixFeb });
     assert.equal((html.match(/class="real-prices__pair"/g) ?? []).length, 3);
     const at = (text) => html.indexOf(text);
-    const order = [at('JL5103'), at('JL5105'), at('NH5811')];
+    const order = [at('NH5811'), at('JL5103'), at('JL5105')];
     assert.ok(order.every((i) => i > -1), 'every pricier flight is rendered');
     assert.deepEqual(order, [...order].sort((a, b) => a - b));
     assert.equal((html.match(/差額 <span[^>]*>(￥|¥)62,081<\/span>/g) ?? []).length, 2);

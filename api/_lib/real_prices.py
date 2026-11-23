@@ -263,7 +263,8 @@ def build_summary(entries):
 
     cheapest_lcc / cheapest_full_service: the cheapest entry of that kind, or None.
     codeshare_pairs: one item per same_flight_as link (a link written in both directions
-    counts once), with cheaper/pricier sides and gap_jpy = pricier - cheaper.
+    counts once), with cheaper/pricier sides and gap_jpy = pricier - cheaper. Pairs are sorted by
+    gap_jpy, largest first; ties keep the order in which the pairs were found (stable sort).
     """
     def cheapest(kind):
         of_kind = [e for e in entries if e["kind"] == kind]
@@ -286,6 +287,8 @@ def build_summary(entries):
             "pricier": _pair_side(high),
             "gap_jpy": high["price_jpy"] - low["price_jpy"],
         })
+
+    pairs.sort(key=lambda pair: pair["gap_jpy"], reverse=True)  # reverse=True keeps the sort stable
 
     return {
         "cheapest_lcc": cheapest("lcc"),
