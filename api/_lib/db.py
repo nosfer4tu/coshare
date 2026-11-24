@@ -1,7 +1,7 @@
 from config import DATABASE_URL
 from contextlib import contextmanager
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor, execute_values
 
 @contextmanager
 def get_db():
@@ -36,6 +36,24 @@ def save_search_cache(route, departure_date, passengers, result_json, cabin_clas
 def save_price_history(route, departure_date, price_jpy, operating_airline, marketing_airline):
     with get_db() as (conn, cursor):
         cursor.execute("INSERT INTO price_history (route, departure_date, price_jpy, operating_airline, marketing_airline) VALUES (%s, %s, %s, %s, %s)", (route, departure_date, price_jpy, operating_airline, marketing_airline))
+        conn.commit()
+
+def save_price_history_batch(rows):
+    """Insert all price_history rows of one search: one connection, one INSERT statement, one
+    transaction. `rows` is a list of (route, departure_date, price_jpy, operating_airline,
+    marketing_airline) tuples, the same values save_price_history takes. Nothing is written if the
+    statement fails (get_db rolls back); an empty list does not even connect."""
+    rows = list(rows)
+    if not rows:
+        return
+    with get_db() as (conn, cursor):
+        # page_size = len(rows): execute_values splits into 100-row statements by default.
+        execute_values(
+            cursor,
+            "INSERT INTO price_history (route, departure_date, price_jpy, operating_airline, marketing_airline) VALUES %s",
+            rows,
+            page_size=len(rows),
+        )
         conn.commit()
 
 VERIFIED_CHECK_COLUMNS = (

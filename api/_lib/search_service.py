@@ -53,6 +53,20 @@ def _duffel_failed(raw_response):
     )
 
 
+def _price_history_rows(origin, destination, departure_date, passenger_list, cabin_class, normalized):
+    """The price_history rows of a fresh search: JPY offers only, and only for economy with exactly
+    one adult. price_history has no cabin or passenger column, so any other search (a total for
+    two adults is double, business fares are higher) would skew the trend averages."""
+    if cabin_class != "economy" or passenger_list != ["adult"]:
+        return []
+    history_route = f"{origin}-{destination}"
+    return [
+        (history_route, departure_date, offer["Total Amount"], offer["Operating Carrier"], offer["Marketing Carrier"])
+        for offer in normalized
+        if offer["Currency"] == "JPY"
+    ]
+
+
 def get_normalized_offers(origin, destination, departure_date, passengers, cabin_class):
     """Return the full normalized offer list for a search.
 
@@ -82,13 +96,20 @@ def get_normalized_offers(origin, destination, departure_date, passengers, cabin
     if not normalized:
         return []
 
-    db.save_search_cache(route, departure_date, passengers_key, json.dumps(normalized), cabin_class)
-    history_route = f"{origin}-{destination}"
-    for offer in normalized:
-        if offer["Currency"] == "JPY" and cabin_class == "economy":
-            db.save_price_history(
-                history_route, departure_date, offer["Total Amount"],
-                offer["Operating Carrier"], offer["Marketing Carrier"],
+    # The offers are already in hand: a failed write is logged and never breaks the response.
+    try:
+        db.save_search_cache(route, departure_date, passengers_key, json.dumps(normalized), cabin_class)
+    except Exception:
+        logger.warning("search_cache write failed for %s on %s; serving the live offers", route, departure_date, exc_info=True)
+
+    history_rows = _price_history_rows(origin, destination, departure_date, passenger_list, cabin_class, normalized)
+    if history_rows:
+        try:
+            db.save_price_history_batch(history_rows)  # one connection, one transaction
+        except Exception:
+            logger.warning(
+                "price_history write failed for %s-%s on %s (%d rows rolled back); serving the live offers",
+                origin, destination, departure_date, len(history_rows), exc_info=True,
             )
     return normalized
 

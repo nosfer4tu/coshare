@@ -53,7 +53,12 @@ Small, reviewable diffs. Show the diff before explaining it.
   both tables). Bump `SEARCH_CACHE_VERSION` when the cached payload changes; old rows are left
   to expire (the 24h TTL), never deleted. A Duffel error (`errors` or no `data`) or an empty
   normalized list writes nothing and returns `[]`, so the next request retries Duffel.
-  `price_history` keeps the unprefixed route (`KIX-TPE`), which `trend_service` reads.
+  `price_history` keeps the unprefixed route (`KIX-TPE`), which `trend_service` reads. The history
+  rows of one search go in as a single batch (`db.save_price_history_batch`: one connection, one
+  INSERT, one transaction) and **only for economy with exactly one adult** (`passengers == ["adult"]`,
+  JPY offers only): the table has no cabin or passenger column, and a 2-adult total is double.
+  A failed `search_cache` or history write is logged as a warning and never breaks the response
+  (a failed batch rolls back that search's history rows). `db.save_price_history` (one row) remains.
 - `api/_lib/snapshot_service.py` + `api/_lib/demo_snapshots/<ORIGIN>-<DEST>_<DATE>.json` (stdlib only):
   saved Duffel test-environment results for the demo, one file per exact search (full normalized
   list + `route`, `departure_date`, `cabin_class`, `passengers`, `source`, `captured_at`). Hook:
@@ -198,9 +203,10 @@ next to the usual test-data notice.
   normalization/display change, use a **never-searched date** to force a fresh Duffel
   fetch; cached dates replay old data and give false results.
 - Cached searches do not write price history; only fresh fetches do (JPY offers only).
-- `price_history` has NO `cabin_class` column, so non-economy test searches contaminate the
-  trend data. Use economy for test searches, or note the route + departure dates you searched
-  so cleanup SQL can be written (output it for review; never execute — see Guardrails).
+- `price_history` has NO `cabin_class` or passenger column. Since the batch writer only records
+  economy + one adult, other searches no longer add rows, but rows written before that guard may be
+  2-adult or non-economy. If you must test other searches, note the route + departure dates so cleanup
+  SQL can be written (output it for review; never execute — see Guardrails).
 - `database/schemas/*.sql` may be stale: `search_cache.passengers` is declared `INTEGER` but
   the code writes strings like `'adult'` / `'adult,adult'`. Check the live Neon schema before
   writing SQL against it.

@@ -195,6 +195,11 @@ class FakeDb:
         if self.strict:
             raise AssertionError("the DB must not be written")
 
+    def save_price_history_batch(self, rows):
+        self.history_writes.extend(rows)
+        if self.strict:
+            raise AssertionError("the DB must not be written")
+
 
 class FakeDuffel:
     def __init__(self, response=None, exc=None):

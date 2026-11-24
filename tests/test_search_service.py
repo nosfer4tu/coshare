@@ -58,7 +58,8 @@ class FakeDb:
     def __init__(self):
         self.cache = {}  # (route, date, cabin, passengers) -> result_json (as stored: a str)
         self.cache_writes = []
-        self.history_writes = []
+        self.history_writes = []  # every history row, however it arrived
+        self.history_batches = []  # one entry per save_price_history_batch call: the rows it received
 
     def get_cached_search(self, route, departure_date, cabin_class, passengers):
         key = (route, departure_date, cabin_class, passengers)
@@ -72,6 +73,11 @@ class FakeDb:
 
     def save_price_history(self, route, departure_date, price_jpy, operating_airline, marketing_airline):
         self.history_writes.append((route, departure_date, price_jpy, operating_airline, marketing_airline))
+
+    def save_price_history_batch(self, rows):
+        rows = list(rows)
+        self.history_batches.append(rows)
+        self.history_writes.extend(rows)
 
 
 class FakeDuffel:
@@ -197,22 +203,22 @@ class SuccessWritesTest(ServiceTestCase):
         self.assertEqual(len(self.db.cache_writes), 1)
         # USD offers are converted to JPY (x155) by the normalizer; both non-ZZ offers are recorded.
         self.assertEqual(
-            self.db.history_writes,
-            [("KIX-TPE", "2026-12-02", 18600, "China Airlines", "Japan Airlines"),
-             ("KIX-TPE", "2026-12-02", 21700, "EVA Air", "EVA Air")],
+            self.db.history_batches,
+            [[("KIX-TPE", "2026-12-02", 18600, "China Airlines", "Japan Airlines"),
+              ("KIX-TPE", "2026-12-02", 21700, "EVA Air", "EVA Air")]],
         )
 
     def test_cache_hit_writes_nothing(self):
         self.use(RAW)
         self.search()
         self.search()
-        self.assertEqual((len(self.db.cache_writes), len(self.db.history_writes)), (1, 2))
+        self.assertEqual((len(self.db.cache_writes), len(self.db.history_batches), len(self.db.history_writes)), (1, 1, 2))
 
     def test_non_economy_caches_but_records_no_price_history(self):
         self.use(RAW)
         self.search(cabin_class="business")
         self.assertEqual(len(self.db.cache_writes), 1)
-        self.assertEqual(self.db.history_writes, [])
+        self.assertEqual(self.db.history_batches, [])
 
 
 class RoutesTest(ServiceTestCase):
