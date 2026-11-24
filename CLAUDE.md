@@ -54,11 +54,19 @@ Small, reviewable diffs. Show the diff before explaining it.
   to expire (the 24h TTL), never deleted. A Duffel error (`errors` or no `data`) or an empty
   normalized list writes nothing and returns `[]`, so the next request retries Duffel.
   `price_history` keeps the unprefixed route (`KIX-TPE`), which `trend_service` reads.
-- `api/_lib/codeshare_service.py` `filter_codeshare_offers(normalized)`: keeps offers with
-  `is Codeshare` and drops `Owner Airline IATA` in `{"HR"}`. `get_codeshare_offers(raw)` is the
-  same rule on a raw Duffel response. Only `/api/codeshare/detect` (ResultsPage mode
+- `api/_lib/codeshare_service.py` `filter_codeshare_offers(normalized)`: the keep rule for codeshare
+  mode. An offer is kept if (a) it passes the original rule, `is Codeshare` and `Owner Airline IATA`
+  not in `{"HR"}` (an *anchor*), or (b) it is a non-HR nonstop offer in the same pairing group as
+  an anchor. The group key is the one `groupOffers` uses: `Departure Airport`, `Arrival Airport`,
+  `Departure Time`, `Operating IATA`. So the operating carrier's own-code offer (BR131 next to
+  NH5811, NH829 next to AI8001) stays beside the codeshare offer it is compared with. Connecting
+  offers (`'Segment Count' > 1`, their key describes only the last leg) and rows lacking
+  `Departure Time` or `Operating IATA` are never grouped, so they pass only on rule (a) and never
+  anchor a group. HR-displayed offers are always dropped and never anchor. `get_codeshare_offers(raw)`
+  is the same rule on a raw Duffel response. Only `/api/codeshare/detect` (ResultsPage mode
   `codeshare`) applies it, **after** the cache read on every request; `/api/flights/search`
-  (mode `both`) returns the full list, so it does no server-side HR filtering.
+  (mode `both`) returns the full list, so it does no server-side HR filtering. It changes only
+  which offers are returned: the cache, `price_history` and the trend tab never see the filter.
 - **Pairing runs in the frontend**: `groupOffers(offers, mode)` in
   `frontend/src/utils/groupOffers.js` (pure; tests in `groupOffers.test.mjs`), called from
   `ResultsPage.jsx`. Nonstop offers are grouped by
@@ -232,12 +240,17 @@ Small, reviewable diffs. Show the diff before explaining it.
   camelCase (`departureDate`, `cabinClass`).
 - **Vite proxy target.** `frontend/vite.config.js` proxies `/api` to `http://localhost:8000`,
   which works for the browser in dev. The 127.0.0.1 rule applies to scripts and `curl`.
-- **`is Codeshare` is unchanged on purpose.** Its `offer.owner` clause makes it `True` for
-  HR-ticketed own-code offers (e.g. owner `HR`, marketing = operating = `7C`). That is what
-  keeps HR-ticketed own-code offers such as `CI` and `KE` in the codeshare pairs
-  (`get_codeshare_offers`; checked in the analysis). `groupOffers` also reads it
-  (single nonstop offers are dropped in codeshare mode unless it is true). Do not change the rule
-  without checking `/api/codeshare/detect` first.
+- **`is Codeshare` is unchanged on purpose, and it is not a reliable "is a codeshare" flag.** The
+  normalizer sets it when marketing != operating carrier **or** when `offer.owner` (the ticketing
+  entity, not stored in the cached row) != the operating carrier. Two consequences. An own-code
+  offer ticketed by HR (e.g. owner `HR`, marketing = operating = `CI`/`KE`/`7C`) is `True`, so it
+  always passed the filter. An own-code offer ticketed by the airline itself (`BR131`, `NH829`,
+  owner = marketing = operating) is `False`. Before the group keep rule, that made codeshare mode
+  drop the operating carrier's own offer and leave only a lone ANA / Air India card, while CI/JAL
+  pairs survived by accident of who ticketed the CI fare. The keep rule above fixes that in the
+  filter; the flag itself still behaves as described. `groupOffers` also reads it (single nonstop
+  offers are dropped in codeshare mode unless it is true). Do not change the rule without
+  checking `/api/codeshare/detect` first.
 - **Connecting itineraries are never paired.** Codeshare price gaps are detected for nonstop
   offers only (`'Segment Count'` 1 or absent); codeshare mode hides connecting offers entirely
   and 両方 mode lists them as single FlightCards. Offers cached before `'Segment Count'` existed
