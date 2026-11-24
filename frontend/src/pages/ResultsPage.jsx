@@ -5,6 +5,8 @@ import CodeShareCard from "../components/results/CodeShareCard";
 import PriceGapExplainer from "../components/results/PriceGapExplainer";
 import Navbar from "../components/common/Navbar";
 import TestDataNotice from "../components/common/TestDataNotice";
+import SnapshotNotice from "../components/common/SnapshotNotice";
+import { snapshotInfo } from "../utils/snapshotNotice";
 import "./ResultsPage.css";
 import SkeletonLoader from "../components/common/SkeletonLoader";
 import { ErrorMessage } from "../components/common/StatusMessage";
@@ -36,6 +38,7 @@ function ResultsPage(){
     const [cabinClass, setCabinClass] = useState(searchParams.get("cabinClass") ?? location.state?.cabinClass ?? "economy");
     const [searchMode, setSearchMode] = useState(searchParams.get("mode") ?? location.state?.mode ?? "codeshare");
     const [ results, setResults] = useState([]);
+    const [snapshot, setSnapshot] = useState(null);
     const [ loading, setLoading] = useState(true);
     const [ error, setError] = useState(null);
     const [verifiedChecks, setVerifiedChecks] = useState([]);
@@ -112,11 +115,13 @@ function ResultsPage(){
         const fetchData = async () =>{
             setLoading(true);
             setError(null);
+            setSnapshot(null);
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`Request failed: ${response.status}`);
                 const data = await response.json();
                 setResults(data.data);
+                setSnapshot(snapshotInfo(data));
             } catch (error) {
                 setError(error.message);
             } finally{
@@ -184,6 +189,7 @@ function ResultsPage(){
             <TestDataNotice>
                 表示している価格は、Duffel APIのテスト環境のデータです。実際の販売価格ではありません。ご予約の前に、必ず航空会社の公式サイトで価格をご確認ください。
             </TestDataNotice>
+            {snapshot && <SnapshotNotice capturedAt={snapshot.capturedAt} />}
             <RealPricesPanel state={realPrices.state} search={realPrices.search} />
             <p className="results-page__section-label">コードシェア便の価格差</p>
             <PriceGapExplainer />

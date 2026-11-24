@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '_lib'))
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
-from search_service import get_normalized_offers
+from search_service import search_payload
 from codeshare_service import filter_codeshare_offers
 
 class handler(BaseHTTPRequestHandler):
@@ -24,9 +24,9 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": "origin、destination、departure_dateは必須項目です。"}).encode())
             return   
         # The cache holds the full list; the codeshare filter runs here, on every request.
-        result = filter_codeshare_offers(get_normalized_offers(origin, destination, departure_date, passengers, cabin_class))
+        body = search_payload(origin, destination, departure_date, passengers, cabin_class, filter_codeshare_offers)
         # return response
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
-        self.wfile.write(json.dumps({"data": result}).encode())
+        self.wfile.write(json.dumps(body).encode())

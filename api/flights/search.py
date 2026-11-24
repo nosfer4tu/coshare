@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '_lib'))
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
-from search_service import get_normalized_offers
+from search_service import search_payload
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -22,11 +22,11 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"error": "origin、destination、departure_dateは必須項目です。"}).encode())
             return   
-        # The cache holds the full list; this route returns it unfiltered.
-        result = get_normalized_offers(origin, destination, departure_date, passengers, cabin_class)
+        # The cache holds the full list; this route returns it unfiltered (or a saved demo snapshot).
+        body = search_payload(origin, destination, departure_date, passengers, cabin_class)
         # return response
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
-        self.wfile.write(json.dumps({"data": result}).encode())
+        self.wfile.write(json.dumps(body).encode())
         

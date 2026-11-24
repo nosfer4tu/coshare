@@ -54,6 +54,15 @@ Small, reviewable diffs. Show the diff before explaining it.
   to expire (the 24h TTL), never deleted. A Duffel error (`errors` or no `data`) or an empty
   normalized list writes nothing and returns `[]`, so the next request retries Duffel.
   `price_history` keeps the unprefixed route (`KIX-TPE`), which `trend_service` reads.
+- `api/_lib/snapshot_service.py` + `api/_lib/demo_snapshots/<ORIGIN>-<DEST>_<DATE>.json` (stdlib only):
+  saved Duffel test-environment results for the demo, one file per exact search (full normalized
+  list + `route`, `departure_date`, `cabin_class`, `passengers`, `source`, `captured_at`). Hook:
+  `search_service.search_offers()` wraps `get_normalized_offers` (unchanged) and `search_payload()`
+  builds the response body; `local_server.py` and both Vercel search handlers call `search_payload`.
+  A snapshot is served only for an exact match (economy, one adult, a file for that route and date)
+  and only when `DEMO_SNAPSHOT` is on (returns before any cache, Duffel or DB access) or when the
+  live search raised or returned no offers. It then goes through the same mode filter as live data
+  and is never written to `search_cache` / `price_history`. See "Demo mode" below.
 - `api/_lib/codeshare_service.py` `filter_codeshare_offers(normalized)`: the keep rule for codeshare
   mode. An offer is kept if (a) it passes the original rule, `is Codeshare` and `Owner Airline IATA`
   not in `{"HR"}` (an *anchor*), or (b) it is a non-HR nonstop offer in the same pairing group as
@@ -82,7 +91,9 @@ Small, reviewable diffs. Show the diff before explaining it.
 
 ## Data Contracts (do not change silently)
 - **Search API**: `GET /api/flights/search?origin=KIX&destination=TPE&departureDate=YYYY-MM-DD&passengers=adult&cabinClass=economy`
-  — camelCase param names. Response: `{"data": [<normalized offers>]}`.
+  — camelCase param names. Response: `{"data": [<normalized offers>]}`. When a saved demo snapshot
+  is served, three more top-level fields appear: `data_source` (`"snapshot"`), `captured_at` (ISO UTC)
+  and `snapshot_source`; live responses carry none of them.
   `passengers` is ONE comma-separated param, one entry per traveller
   (`passengers=adult,adult,child`; default `adult`); each entry becomes a Duffel
   `{"type": ...}` passenger and the joined string is the cache key.
@@ -149,6 +160,28 @@ Small, reviewable diffs. Show the diff before explaining it.
   and say why in the entry's `note`. Tested in `Feb2027RecordsTest`.
 - `same_flight_as` goes on the pricier flight. Set `operating_code` and `same_flight_as` only for
   codeshares whose operating carrier is confirmed; otherwise keep the flights as plain entries.
+
+## Demo mode (saved test data)
+So the demo does not depend on what Duffel returns that day, two searches can be served from saved
+Duffel test-environment results (`api/_lib/demo_snapshots/`). The results page then shows
+「保存済みのDuffelテストデータを表示しています(取得日 YYYY-MM-DD)」 (the UTC date of `captured_at`)
+next to the usual test-data notice.
+- Run the backend in demo mode (after the `lsof` check above): `DEMO_SNAPSHOT=1 python3 local_server.py`
+  (or put `DEMO_SNAPSHOT=1` in `.env.local`; values `1`, `true`, `yes`, `on` count). The variable is
+  read on every request. On Vercel it is a project environment variable.
+- Run the frontend as usual: `cd frontend && npm run dev`, then open http://localhost:5173.
+- Only these searches match a snapshot (route, date, economy, 1 adult; any other search is live):
+  - KIX → TPE, 2027-02-22 (captured 2026-11-23, 70 offers)
+  - NRT → BOM, 2027-02-22 (captured 2026-11-04, 116 offers; holds the AI8001 / NH829 pair at 11:15)
+- Without `DEMO_SNAPSHOT`, a snapshot appears only as a fallback, when the live search raised an
+  exception or returned no offers (a Duffel error, or only ZZ offers). A fresh cache hit still wins.
+  Duffel calls have no timeout, so a hanging Duffel never reaches the fallback; use `DEMO_SNAPSHOT=1`
+  for the demo.
+- Forced mode needs no database for the offers. The verified-check badges, real prices and trend
+  pages still read their own sources.
+- Updating a snapshot: replace the file with a newer full normalized list for the same search and a new
+  `captured_at`; `snapshot_service.validate_snapshot` rejects a malformed file (the search then runs live).
+  Tests: `tests/test_snapshot_service.py`, `frontend/src/utils/snapshotNotice.test.mjs`.
 
 ## Environment
 - Duffel is in **TEST MODE**: prices are synthetic; ZZ offers appear in raw responses.

@@ -19,17 +19,16 @@ def get_common_params():
     }
 
 def search_response(filter_offers=None):
-    from search_service import get_normalized_offers
+    from search_service import search_payload
 
     p = get_common_params()
     if not p['origin'] or not p['destination'] or not p['departure_date']:
         return Response(json.dumps({"error": "必須項目が不足しています"}), status=400, mimetype='application/json')
 
-    # The cache holds the full list; the mode filter runs here, on every request.
-    offers = get_normalized_offers(p['origin'], p['destination'], p['departure_date'], p['passengers'], p['cabin_class'])
-    if filter_offers:
-        offers = filter_offers(offers)
-    return Response(json.dumps({"data": offers}), status=200, mimetype='application/json')
+    # The cache holds the full list; the mode filter runs here, on every request. A saved demo
+    # snapshot goes through the same filter (see snapshot_service).
+    body = search_payload(p['origin'], p['destination'], p['departure_date'], p['passengers'], p['cabin_class'], filter_offers)
+    return Response(json.dumps(body), status=200, mimetype='application/json')
 
 @app.route('/api/flights/search')
 def flights_search():

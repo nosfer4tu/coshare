@@ -9,6 +9,7 @@ import logging
 
 import db
 import duffel_service
+import snapshot_service
 from normalizer import normalize_offers
 
 logger = logging.getLogger(__name__)
@@ -90,3 +91,51 @@ def get_normalized_offers(origin, destination, departure_date, passengers, cabin
                 offer["Operating Carrier"], offer["Marketing Carrier"],
             )
     return normalized
+
+
+def _snapshot_for(origin, destination, departure_date, passengers, cabin_class):
+    return snapshot_service.load_snapshot(origin, destination, departure_date, passengers, cabin_class)
+
+
+def search_offers(origin, destination, departure_date, passengers, cabin_class):
+    """Return (offers, snapshot_meta). snapshot_meta is None for live data.
+
+    Live data is whatever get_normalized_offers returns, unchanged. A saved snapshot (see
+    snapshot_service) replaces it only for the exact searches that have one, and only when
+    DEMO_SNAPSHOT is on (checked first: no cache, Duffel or DB access) or when the live search
+    raised or came back empty. A snapshot is never written to search_cache or price_history.
+    """
+    args = (origin, destination, departure_date, passengers, cabin_class)
+
+    if snapshot_service.snapshot_forced():
+        snapshot = _snapshot_for(*args)
+        if snapshot is not None:
+            return snapshot["offers"], snapshot_service.snapshot_meta(snapshot)
+
+    try:
+        offers = get_normalized_offers(*args)
+    except Exception:
+        snapshot = _snapshot_for(*args)
+        if snapshot is None:
+            raise
+        logger.warning("Live search failed for %s-%s on %s; serving the saved snapshot", origin, destination, departure_date)
+        return snapshot["offers"], snapshot_service.snapshot_meta(snapshot)
+
+    if not offers:
+        snapshot = _snapshot_for(*args)
+        if snapshot is not None:
+            logger.warning("No usable live offers for %s-%s on %s; serving the saved snapshot", origin, destination, departure_date)
+            return snapshot["offers"], snapshot_service.snapshot_meta(snapshot)
+    return offers, None
+
+
+def search_payload(origin, destination, departure_date, passengers, cabin_class, filter_offers=None):
+    """The JSON body of a search response: {"data": [...]}, plus the snapshot fields when a
+    snapshot was served. `filter_offers` is the mode filter, applied after the offers are chosen."""
+    offers, meta = search_offers(origin, destination, departure_date, passengers, cabin_class)
+    if filter_offers:
+        offers = filter_offers(offers)
+    body = {"data": offers}
+    if meta:
+        body.update(meta)
+    return body
