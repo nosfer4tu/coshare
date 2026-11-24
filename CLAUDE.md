@@ -82,6 +82,9 @@ Small, reviewable diffs. Show the diff before explaining it.
   `` `${Departure Airport}_${Arrival Airport}_${Departure Time}_${Operating IATA}` `` (airports
   keep e.g. HND and NRT departures at the same time from pairing);
   groups with >1 offer are codeshare groups (gap logic in `frontend/src/utils/codeshareGap.js`).
+  Display order (order only, not pairing): groups with a real gap, largest gap first (stable, so equal
+  gaps keep their arrival order), then tied groups, then single offers (then connecting offers in 両方 mode);
+  tests in `groupOffers.order.test.mjs`.
   An offer with `'Segment Count' > 1` never joins a group (its key describes only the last leg);
   offers with `'Segment Count'` 1 or absent (older cache rows) group as before. Codeshare mode
   drops connecting offers (and single nonstop offers whose `is Codeshare` is false); 両方 mode
